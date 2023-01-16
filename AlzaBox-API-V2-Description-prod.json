@@ -2658,7 +2658,7 @@
         "type": "oauth2",
         "flows": {
           "password": {
-            "tokenUrl": "https://identitymanagement.phx-test.alza.cz/connect/token",
+            "tokenUrl": "https://identitymanagement.phoenix.alza.cz/connect/token",
             "scopes": {
               "konzole_access": "Konzole API"
             }
