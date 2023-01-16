@@ -245,18 +245,20 @@
           {
             "name": "fields[courier]",
             "in": "query",
-            "description": "Array of fields that should be returned.\r\nCurrently, there is only one value supported: boxes",
+            "description": "Array of fields that should be returned.\r\nSupported values: boxes, boxesAccessType",
             "schema": {
               "type": "array",
               "items": {
                 "type": "string"
               },
               "example": [
-                "boxes"
+                "boxes",
+                "boxesAccessType"
               ]
             },
             "example": [
-              "boxes"
+              "boxes",
+              "boxesAccessType"
             ]
           }
         ],
@@ -323,18 +325,20 @@
           {
             "name": "fields[courier]",
             "in": "query",
-            "description": "Array of fields that should be returned.\r\nCurrently, there is only one value supported: boxes",
+            "description": "Array of fields that should be returned.\r\nSupported values: boxes, boxesAccessType",
             "schema": {
               "type": "array",
               "items": {
                 "type": "string"
               },
               "example": [
-                "boxes"
+                "boxes",
+                "boxesAccessType"
               ]
             },
             "example": [
-              "boxes"
+              "boxes",
+              "boxesAccessType"
             ]
           }
         ],
@@ -436,18 +440,20 @@
           {
             "name": "fields[courier]",
             "in": "query",
-            "description": "Array of fields that should be returned.\r\nCurrently, there is only one value supported: boxes",
+            "description": "Array of fields that should be returned.\r\nSupported values: boxes, boxesAccessType",
             "schema": {
               "type": "array",
               "items": {
                 "type": "string"
               },
               "example": [
-                "boxes"
+                "boxes",
+                "boxesAccessType"
               ]
             },
             "example": [
-              "boxes"
+              "boxes",
+              "boxesAccessType"
             ]
           }
         ],
@@ -581,18 +587,20 @@
           {
             "name": "fields[courier]",
             "in": "query",
-            "description": "Array of fields that should be returned.\r\nCurrently, there is only one value supported: boxes",
+            "description": "Array of fields that should be returned.\r\nSupported values: boxes, boxesAccessType",
             "schema": {
               "type": "array",
               "items": {
                 "type": "string"
               },
               "example": [
-                "boxes"
+                "boxes",
+                "boxesAccessType"
               ]
             },
             "example": [
-              "boxes"
+              "boxes",
+              "boxesAccessType"
             ]
           }
         ],
@@ -648,6 +656,14 @@
         ],
         "summary": "Get all reservations that meet filter criteria",
         "parameters": [
+          {
+            "name": "filter[blocked]",
+            "in": "query",
+            "description": "Status of blocking - blocked reservation can not be picked up by customer from the box",
+            "schema": {
+              "type": "boolean"
+            }
+          },
           {
             "name": "filter[status]",
             "in": "query",
@@ -1170,6 +1186,12 @@
       "CourierResponseAttributes": {
         "type": "object",
         "properties": {
+          "boxesAccessType": {
+            "type": "string",
+            "description": "Box access type",
+            "nullable": true,
+            "example": "SPECIFIC"
+          },
           "boxes": {
             "type": "array",
             "items": {
@@ -1217,11 +1239,6 @@
             "description": "Pin for AlzaBox access",
             "nullable": true,
             "example": "123456"
-          },
-          "boxesAccessType": {
-            "type": "string",
-            "description": "Box access type",
-            "example": "SPECIFIC"
           },
           "attributes": {
             "allOf": [
