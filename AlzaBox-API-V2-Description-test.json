@@ -649,139 +649,6 @@
         ]
       }
     },
-    "/parcel-lockers/v2/reservations": {
-      "get": {
-        "tags": [
-          "Reservations"
-        ],
-        "summary": "Get all reservations that meet filter criteria",
-        "parameters": [
-          {
-            "name": "filter[blocked]",
-            "in": "query",
-            "description": "Status of blocking - blocked reservation can not be picked up by customer from the box",
-            "schema": {
-              "type": "boolean"
-            }
-          },
-          {
-            "name": "filter[status]",
-            "in": "query",
-            "description": "Status of reservation, possible values: NEW, PRERESERVED, RESERVED, INCOMPLETE, STOCKING, STOCKED, RETURNING, RETURNED, PICKED_UP",
-            "schema": {
-              "type": "string",
-              "example": "STOCKED"
-            },
-            "example": "STOCKED"
-          },
-          {
-            "name": "filter[id]",
-            "in": "query",
-            "description": "Ids of reservations",
-            "schema": {
-              "maxItems": 100,
-              "type": "array",
-              "items": {
-                "type": "string"
-              },
-              "example": [
-                "RES1",
-                "RES2",
-                "RES3"
-              ]
-            },
-            "example": [
-              "RES1",
-              "RES2",
-              "RES3"
-            ]
-          },
-          {
-            "name": "page[limit]",
-            "in": "query",
-            "description": "Page limit",
-            "schema": {
-              "type": "integer",
-              "format": "int32",
-              "default": 20
-            }
-          },
-          {
-            "name": "page[offset]",
-            "in": "query",
-            "description": "Page offset",
-            "schema": {
-              "type": "integer",
-              "format": "int32",
-              "default": 0
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Success",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/GetReservationsResponseV2"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/GetReservationsErrorResponseV2"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "403": {
-            "description": "Forbidden",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/GetReservationsErrorResponseV2"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Not Found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/GetReservationsErrorResponseV2"
-                }
-              }
-            }
-          },
-          "409": {
-            "description": "Conflict",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/GetReservationsErrorResponseV2"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Server Error"
-          }
-        },
-        "security": [
-          {
-            "oauth2": [ ]
-          }
-        ]
-      }
-    },
     "/parcel-lockers/v2/reservation": {
       "get": {
         "tags": [
@@ -799,6 +666,23 @@
               "example": "RES123"
             },
             "example": "RES123"
+          },
+          {
+            "name": "fields[reservation]",
+            "in": "query",
+            "description": "Array of fields that should be returned.\r\nSupported values: blocked",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "example": [
+                "blocked"
+              ]
+            },
+            "example": [
+              "blocked"
+            ]
           }
         ],
         "responses": {
@@ -870,6 +754,25 @@
           "Reservations"
         ],
         "summary": "Create new reservation",
+        "parameters": [
+          {
+            "name": "fields[reservation]",
+            "in": "query",
+            "description": "Array of fields that should be returned.\r\nSupported values: blocked",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "example": [
+                "blocked"
+              ]
+            },
+            "example": [
+              "blocked"
+            ]
+          }
+        ],
         "requestBody": {
           "description": "Reservation information",
           "content": {
@@ -877,7 +780,7 @@
               "schema": {
                 "allOf": [
                   {
-                    "$ref": "#/components/schemas/CreateReservationInputV2"
+                    "$ref": "#/components/schemas/CreateReservationBodyInputV2"
                   }
                 ],
                 "description": "Input for creating reservation in AlzaBox"
@@ -954,6 +857,25 @@
           "Reservations"
         ],
         "summary": "Update reservation",
+        "parameters": [
+          {
+            "name": "fields[reservation]",
+            "in": "query",
+            "description": "Array of fields that should be returned.\r\nSupported values: blocked",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "example": [
+                "blocked"
+              ]
+            },
+            "example": [
+              "blocked"
+            ]
+          }
+        ],
         "requestBody": {
           "description": "Update information",
           "content": {
@@ -961,7 +883,7 @@
               "schema": {
                 "allOf": [
                   {
-                    "$ref": "#/components/schemas/UpdateReservationInputV2"
+                    "$ref": "#/components/schemas/UpdateReservationBodyInputV2"
                   }
                 ],
                 "description": "Input for a reservation updating"
@@ -1019,6 +941,156 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/UpdateReservationErrorResponseV2"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server Error"
+          }
+        },
+        "security": [
+          {
+            "oauth2": [ ]
+          }
+        ]
+      }
+    },
+    "/parcel-lockers/v2/reservations": {
+      "get": {
+        "tags": [
+          "Reservations"
+        ],
+        "summary": "Get all reservations that meet filter criteria",
+        "parameters": [
+          {
+            "name": "filter[status]",
+            "in": "query",
+            "description": "Status of reservation, possible values: NEW, PRERESERVED, RESERVED, INCOMPLETE, STOCKING, STOCKED, RETURNING, RETURNED, PICKED_UP",
+            "schema": {
+              "type": "string",
+              "example": "STOCKED"
+            },
+            "example": "STOCKED"
+          },
+          {
+            "name": "filter[id]",
+            "in": "query",
+            "description": "Ids of reservations",
+            "schema": {
+              "maxItems": 100,
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "example": [
+                "RES1",
+                "RES2",
+                "RES3"
+              ]
+            },
+            "example": [
+              "RES1",
+              "RES2",
+              "RES3"
+            ]
+          },
+          {
+            "name": "page[limit]",
+            "in": "query",
+            "description": "Page limit",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 20
+            }
+          },
+          {
+            "name": "page[offset]",
+            "in": "query",
+            "description": "Page offset",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            }
+          },
+          {
+            "name": "filter[blocked]",
+            "in": "query",
+            "description": "Status of blocking - blocked reservation can not be picked up by customer from the box",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "fields[reservation]",
+            "in": "query",
+            "description": "Array of fields that should be returned.\r\nSupported values: blocked",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "example": [
+                "blocked"
+              ]
+            },
+            "example": [
+              "blocked"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetReservationsResponseV2"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetReservationsErrorResponseV2"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetReservationsErrorResponseV2"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetReservationsErrorResponseV2"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetReservationsErrorResponseV2"
                 }
               }
             }
@@ -1438,6 +1510,21 @@
         "additionalProperties": false,
         "description": "Attributes of a reservation"
       },
+      "CreateReservationBodyInputV2": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/CreateReservationDataV2"
+              }
+            ],
+            "description": "Data of a reservation"
+          }
+        },
+        "additionalProperties": false,
+        "description": "Input for creating reservation in AlzaBox"
+      },
       "CreateReservationBoxV2": {
         "type": "object",
         "properties": {
@@ -1498,21 +1585,6 @@
         },
         "additionalProperties": false,
         "description": "Error response for create reservation endpoint"
-      },
-      "CreateReservationInputV2": {
-        "type": "object",
-        "properties": {
-          "data": {
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/CreateReservationDataV2"
-              }
-            ],
-            "description": "Data of a reservation"
-          }
-        },
-        "additionalProperties": false,
-        "description": "Input for creating reservation in AlzaBox"
       },
       "CreateReservationItemV2": {
         "type": "object",
@@ -2169,6 +2241,11 @@
             "nullable": true,
             "example": "STOCKED"
           },
+          "blocked": {
+            "type": "boolean",
+            "description": "Status of a reservation blocking - blocked reservation can not be picked up by customer from the box",
+            "nullable": true
+          },
           "createdAt": {
             "type": "string",
             "description": "Created at in UTC",
@@ -2508,6 +2585,22 @@
         "additionalProperties": false,
         "description": "Attributes of reservation to update"
       },
+      "UpdateReservationBodyInputV2": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/UpdateReservationDataV2"
+              }
+            ],
+            "description": "Update reservation input data",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Input for a reservation updating"
+      },
       "UpdateReservationDataV2": {
         "type": "object",
         "properties": {
@@ -2548,22 +2641,6 @@
         },
         "additionalProperties": false,
         "description": "Error response for update reservation"
-      },
-      "UpdateReservationInputV2": {
-        "type": "object",
-        "properties": {
-          "data": {
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/UpdateReservationDataV2"
-              }
-            ],
-            "description": "Update reservation input data",
-            "nullable": true
-          }
-        },
-        "additionalProperties": false,
-        "description": "Input for a reservation updating"
       },
       "UpdateReservationItemV2": {
         "type": "object",
