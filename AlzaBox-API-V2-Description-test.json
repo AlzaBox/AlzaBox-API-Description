@@ -243,6 +243,13 @@
             "example": "JohnDoe123"
           },
           {
+            "name": "Test",
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
             "name": "fields[courier]",
             "in": "query",
             "description": "Array of fields that should be returned.\r\nSupported values: boxes, boxesAccessType",
@@ -2735,7 +2742,7 @@
         "type": "oauth2",
         "flows": {
           "password": {
-            "tokenUrl": "https://identitymanagement.phx-test.alza.cz/connect/token",
+            "tokenUrl": "https://identitymanagement.phx-dev.alz.lcl/connect/token",
             "scopes": {
               "konzole_access": "Konzole API"
             }
