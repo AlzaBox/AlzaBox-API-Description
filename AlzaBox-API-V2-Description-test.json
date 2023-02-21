@@ -657,14 +657,6 @@
         "summary": "Get all reservations that meet filter criteria",
         "parameters": [
           {
-            "name": "filter[blocked]",
-            "in": "query",
-            "description": "Status of blocking - blocked reservation can not be picked up by customer from the box",
-            "schema": {
-              "type": "boolean"
-            }
-          },
-          {
             "name": "filter[status]",
             "in": "query",
             "description": "Status of reservation, possible values: NEW, PRERESERVED, RESERVED, INCOMPLETE, STOCKING, STOCKED, RETURNING, RETURNED, PICKED_UP",
@@ -715,6 +707,31 @@
               "format": "int32",
               "default": 0
             }
+          },
+          {
+            "name": "filter[blocked]",
+            "in": "query",
+            "description": "Status of blocking - blocked reservation can not be picked up by customer from the box",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "fields[reservation]",
+            "in": "query",
+            "description": "Array of fields that should be returned.\r\nSupported values: blocked",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "example": [
+                "blocked"
+              ]
+            },
+            "example": [
+              "blocked"
+            ]
           }
         ],
         "responses": {
@@ -799,6 +816,23 @@
               "example": "RES123"
             },
             "example": "RES123"
+          },
+          {
+            "name": "fields[reservation]",
+            "in": "query",
+            "description": "Array of fields that should be returned.\r\nSupported values: blocked",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "example": [
+                "blocked"
+              ]
+            },
+            "example": [
+              "blocked"
+            ]
           }
         ],
         "responses": {
@@ -870,6 +904,25 @@
           "Reservations"
         ],
         "summary": "Create new reservation",
+        "parameters": [
+          {
+            "name": "fields[reservation]",
+            "in": "query",
+            "description": "Array of fields that should be returned.\r\nSupported values: blocked",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "example": [
+                "blocked"
+              ]
+            },
+            "example": [
+              "blocked"
+            ]
+          }
+        ],
         "requestBody": {
           "description": "Reservation information",
           "content": {
@@ -877,7 +930,7 @@
               "schema": {
                 "allOf": [
                   {
-                    "$ref": "#/components/schemas/CreateReservationInputV2"
+                    "$ref": "#/components/schemas/CreateReservationBodyInputV2"
                   }
                 ],
                 "description": "Input for creating reservation in AlzaBox"
@@ -954,6 +1007,25 @@
           "Reservations"
         ],
         "summary": "Update reservation",
+        "parameters": [
+          {
+            "name": "fields[reservation]",
+            "in": "query",
+            "description": "Array of fields that should be returned.\r\nSupported values: blocked",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "example": [
+                "blocked"
+              ]
+            },
+            "example": [
+              "blocked"
+            ]
+          }
+        ],
         "requestBody": {
           "description": "Update information",
           "content": {
@@ -961,7 +1033,7 @@
               "schema": {
                 "allOf": [
                   {
-                    "$ref": "#/components/schemas/UpdateReservationInputV2"
+                    "$ref": "#/components/schemas/UpdateReservationBodyInputV2"
                   }
                 ],
                 "description": "Input for a reservation updating"
@@ -1438,6 +1510,21 @@
         "additionalProperties": false,
         "description": "Attributes of a reservation"
       },
+      "CreateReservationBodyInputV2": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/CreateReservationDataV2"
+              }
+            ],
+            "description": "Data of a reservation"
+          }
+        },
+        "additionalProperties": false,
+        "description": "Input for creating reservation in AlzaBox"
+      },
       "CreateReservationBoxV2": {
         "type": "object",
         "properties": {
@@ -1498,21 +1585,6 @@
         },
         "additionalProperties": false,
         "description": "Error response for create reservation endpoint"
-      },
-      "CreateReservationInputV2": {
-        "type": "object",
-        "properties": {
-          "data": {
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/CreateReservationDataV2"
-              }
-            ],
-            "description": "Data of a reservation"
-          }
-        },
-        "additionalProperties": false,
-        "description": "Input for creating reservation in AlzaBox"
       },
       "CreateReservationItemV2": {
         "type": "object",
@@ -2169,6 +2241,11 @@
             "nullable": true,
             "example": "STOCKED"
           },
+          "blocked": {
+            "type": "boolean",
+            "description": "Status of a reservation blocking - blocked reservation can not be picked up by customer from the box",
+            "nullable": true
+          },
           "createdAt": {
             "type": "string",
             "description": "Created at in UTC",
@@ -2508,6 +2585,22 @@
         "additionalProperties": false,
         "description": "Attributes of reservation to update"
       },
+      "UpdateReservationBodyInputV2": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/UpdateReservationDataV2"
+              }
+            ],
+            "description": "Update reservation input data",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Input for a reservation updating"
+      },
       "UpdateReservationDataV2": {
         "type": "object",
         "properties": {
@@ -2548,22 +2641,6 @@
         },
         "additionalProperties": false,
         "description": "Error response for update reservation"
-      },
-      "UpdateReservationInputV2": {
-        "type": "object",
-        "properties": {
-          "data": {
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/UpdateReservationDataV2"
-              }
-            ],
-            "description": "Update reservation input data",
-            "nullable": true
-          }
-        },
-        "additionalProperties": false,
-        "description": "Input for a reservation updating"
       },
       "UpdateReservationItemV2": {
         "type": "object",
@@ -2658,7 +2735,7 @@
         "type": "oauth2",
         "flows": {
           "password": {
-            "tokenUrl": "https://identitymanagement.phx-test.alza.cz/connect/token",
+            "tokenUrl": "https://identitymanagement.phx-dev.alz.lcl/connect/token",
             "scopes": {
               "konzole_access": "Konzole API"
             }
