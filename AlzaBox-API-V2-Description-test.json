@@ -118,6 +118,133 @@
             "oauth2": [ ]
           }
         ]
+      },
+      "patch": {
+        "tags": [
+          "Boxes"
+        ],
+        "summary": "Updates AlzaBox partner's information",
+        "parameters": [
+          {
+            "name": "fields[box]",
+            "in": "query",
+            "description": "Array of fields that is possible to return\r\n(name, available, address, gps, description, openingHours, photos, slots, occupancy, deliveryPin)",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "example": [
+                "name",
+                "description",
+                "address"
+              ]
+            },
+            "example": [
+              "name",
+              "description",
+              "address"
+            ]
+          }
+        ],
+        "requestBody": {
+          "description": "Input for updating AlzaBox",
+          "content": {
+            "application/json-patch+json": {
+              "schema": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/UpdateBoxBodyInputV2"
+                  }
+                ],
+                "description": "Input body for updating AlzaBox"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/UpdateBoxBodyInputV2"
+                  }
+                ],
+                "description": "Input body for updating AlzaBox"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/UpdateBoxBodyInputV2"
+                  }
+                ],
+                "description": "Input body for updating AlzaBox"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/UpdateBoxBodyInputV2"
+                  }
+                ],
+                "description": "Input body for updating AlzaBox"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdateBoxResponseV2"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdateBoxErrorResponseV2"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdateBoxErrorResponseV2"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdateBoxErrorResponseV2"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server Error"
+          }
+        },
+        "security": [
+          {
+            "oauth2": [ ]
+          }
+        ]
       }
     },
     "/parcel-lockers/v2/boxes": {
@@ -1255,6 +1382,36 @@
         "additionalProperties": false,
         "description": "Response information about AlzaBox"
       },
+      "BoxResponseDataV2": {
+        "type": "object",
+        "properties": {
+          "box": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/AlzaBoxResponseItemV2"
+              }
+            ],
+            "description": "AlzaBox information",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Response data for Box endpoints"
+      },
+      "BoxesResponseDataV2": {
+        "type": "object",
+        "properties": {
+          "boxes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AlzaBoxResponseItemV2"
+            },
+            "description": "AlzaBoxes information"
+          }
+        },
+        "additionalProperties": false,
+        "description": "Useful data in get boxes reponse"
+      },
       "CourierResponseAttributes": {
         "type": "object",
         "properties": {
@@ -1771,22 +1928,6 @@
         "additionalProperties": false,
         "description": "Error response for get box endpoint"
       },
-      "GetBoxResponseDataV2": {
-        "type": "object",
-        "properties": {
-          "box": {
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/AlzaBoxResponseItemV2"
-              }
-            ],
-            "description": "AlzaBoxes information",
-            "nullable": true
-          }
-        },
-        "additionalProperties": false,
-        "description": "Response for GetBox endpoint"
-      },
       "GetBoxResponseV2": {
         "type": "object",
         "properties": {
@@ -1807,7 +1948,7 @@
           "data": {
             "allOf": [
               {
-                "$ref": "#/components/schemas/GetBoxResponseDataV2"
+                "$ref": "#/components/schemas/BoxResponseDataV2"
               }
             ],
             "description": "Useful data"
@@ -1841,20 +1982,6 @@
         "additionalProperties": false,
         "description": "Error response for get boxes endpoint"
       },
-      "GetBoxesResponseDataV2": {
-        "type": "object",
-        "properties": {
-          "boxes": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/AlzaBoxResponseItemV2"
-            },
-            "description": "AlzaBoxes information"
-          }
-        },
-        "additionalProperties": false,
-        "description": "Useful data in get boxes reponse"
-      },
       "GetBoxesResponseV2": {
         "type": "object",
         "properties": {
@@ -1875,7 +2002,7 @@
           "data": {
             "allOf": [
               {
-                "$ref": "#/components/schemas/GetBoxesResponseDataV2"
+                "$ref": "#/components/schemas/BoxesResponseDataV2"
               }
             ],
             "description": "Useful data"
@@ -2494,6 +2621,107 @@
         },
         "additionalProperties": false,
         "description": "Slot types"
+      },
+      "UpdateBoxBodyInputV2": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/UpdateBoxDataV2"
+              }
+            ],
+            "description": "Input data for updating AlzaBox"
+          }
+        },
+        "additionalProperties": false,
+        "description": "Input body for updating AlzaBox"
+      },
+      "UpdateBoxDataV2": {
+        "type": "object",
+        "properties": {
+          "box": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/UpdateBoxItemV2"
+              }
+            ],
+            "description": "AlzaBox to update"
+          }
+        },
+        "additionalProperties": false,
+        "description": "Input data for updapting AlzaBox"
+      },
+      "UpdateBoxErrorResponseV2": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "description": "Data placeholder",
+            "default": null,
+            "nullable": true
+          },
+          "metadata": {
+            "description": "Metadata information",
+            "default": null,
+            "nullable": true
+          },
+          "errors": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ErrorResponseItem"
+            },
+            "description": "Errors information",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Error response for update box endpoint"
+      },
+      "UpdateBoxItemV2": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Box identification",
+            "format": "int32"
+          },
+          "pid": {
+            "type": "string",
+            "description": "Partner's box identification",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Input box information for updating AlzaBox"
+      },
+      "UpdateBoxResponseV2": {
+        "type": "object",
+        "properties": {
+          "metadata": {
+            "description": "Metadata information",
+            "default": null,
+            "nullable": true
+          },
+          "errors": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ErrorResponseItem"
+            },
+            "description": "Errors information",
+            "default": null,
+            "nullable": true
+          },
+          "data": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/BoxResponseDataV2"
+              }
+            ],
+            "description": "Useful data"
+          }
+        },
+        "additionalProperties": false,
+        "description": "Response for update box endpoint"
       },
       "UpdateCourierErrorResponse": {
         "type": "object",
