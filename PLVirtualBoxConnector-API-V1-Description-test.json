@@ -1,0 +1,845 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "PLVirtualBoxConnector",
+    "description": "PLVirtualBoxConnector service for Phoenix.",
+    "contact": {
+      "name": "Alza.cz a.s.",
+      "url": "https://alza.cz",
+      "email": "erp_konzole2@alza.cz"
+    },
+    "license": {
+      "name": "All rights reserved"
+    },
+    "version": "v1"
+  },
+  "paths": {
+    "/api/graphql": {
+      "post": {
+        "tags": [
+          "GraphQL"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json-patch+json": {
+              "schema": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/GraphQLQuery"
+                  }
+                ]
+              }
+            },
+            "application/json": {
+              "schema": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/GraphQLQuery"
+                  }
+                ]
+              }
+            },
+            "text/json": {
+              "schema": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/GraphQLQuery"
+                  }
+                ]
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/GraphQLQuery"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "security": [
+          {
+            "oauth2": [ ]
+          }
+        ]
+      }
+    },
+    "/api/healthz": {
+      "get": {
+        "tags": [
+          "Healthz"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/metrics": {
+      "get": {
+        "tags": [
+          "Metrics"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/readiness": {
+      "get": {
+        "tags": [
+          "Readiness"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/virtualbox/v1/reservation": {
+      "patch": {
+        "tags": [
+          "Reservations"
+        ],
+        "summary": "Update reservation state",
+        "parameters": [
+          {
+            "name": "ReservationId",
+            "in": "query",
+            "description": "Reservation id",
+            "schema": {
+              "type": "string",
+              "example": "2bb1ed99-aec1-4e98-8e5e-a45ec59c38db"
+            },
+            "example": "2bb1ed99-aec1-4e98-8e5e-a45ec59c38db"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/UpdateReservationInputData"
+                  }
+                ],
+                "description": "Update reservation input data"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReservationStateResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "oauth2": [ ]
+          }
+        ]
+      },
+      "get": {
+        "tags": [
+          "Reservations"
+        ],
+        "summary": "Get virtual box reservation",
+        "parameters": [
+          {
+            "name": "ReservationId",
+            "in": "query",
+            "description": "Reservation id",
+            "schema": {
+              "type": "string",
+              "example": "2bb1ed99-aec1-4e98-8e5e-a45ec59c38db"
+            },
+            "example": "2bb1ed99-aec1-4e98-8e5e-a45ec59c38db"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReservationStateResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "oauth2": [ ]
+          }
+        ]
+      }
+    },
+    "/virtualbox/v1/reservations": {
+      "get": {
+        "tags": [
+          "Reservations"
+        ],
+        "summary": "Get virtual box reservations",
+        "parameters": [
+          {
+            "name": "page[limit]",
+            "in": "query",
+            "description": "Page limit",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 100
+            }
+          },
+          {
+            "name": "page[offset]",
+            "in": "query",
+            "description": "Page offset",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ReservationStateResponse"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "oauth2": [ ]
+          }
+        ]
+      }
+    },
+    "/virtualbox/v1/customer-reservation": {
+      "post": {
+        "tags": [
+          "Reservations"
+        ],
+        "summary": "Create customer reservation (aka AlzaPort)",
+        "requestBody": {
+          "content": {
+            "application/json-patch+json": {
+              "schema": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/CreateCustomerReservationInputData"
+                  }
+                ],
+                "description": "Create customer reservation input data"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/CreateCustomerReservationInputData"
+                  }
+                ],
+                "description": "Create customer reservation input data"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/CreateCustomerReservationInputData"
+                  }
+                ],
+                "description": "Create customer reservation input data"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/CreateCustomerReservationInputData"
+                  }
+                ],
+                "description": "Create customer reservation input data"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReservationStateResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "oauth2": [ ]
+          }
+        ]
+      }
+    },
+    "/api/serviceinfo/about": {
+      "get": {
+        "tags": [
+          "ServiceInfo"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/serviceinfo/versions": {
+      "get": {
+        "tags": [
+          "ServiceInfo"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/serviceinfo/settings": {
+      "get": {
+        "tags": [
+          "ServiceInfo"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "security": [
+          {
+            "oauth2": [ ]
+          }
+        ]
+      }
+    },
+    "/api/serviceinfo/environment-variable/{variable}": {
+      "get": {
+        "tags": [
+          "ServiceInfo"
+        ],
+        "parameters": [
+          {
+            "name": "variable",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "security": [
+          {
+            "oauth2": [ ]
+          }
+        ]
+      }
+    },
+    "/api/serviceinfo/configuration-variable/{variable}": {
+      "get": {
+        "tags": [
+          "ServiceInfo"
+        ],
+        "parameters": [
+          {
+            "name": "variable",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "security": [
+          {
+            "oauth2": [ ]
+          }
+        ]
+      }
+    },
+    "/api/serviceinfo/headers": {
+      "get": {
+        "tags": [
+          "ServiceInfo"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "security": [
+          {
+            "oauth2": [ ]
+          }
+        ]
+      }
+    },
+    "/api/serviceinfo/userinfo": {
+      "get": {
+        "tags": [
+          "ServiceInfo"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "security": [
+          {
+            "oauth2": [ ]
+          }
+        ]
+      }
+    },
+    "/virtualbox/v1/start": {
+      "post": {
+        "tags": [
+          "VirtualBox"
+        ],
+        "summary": "Start virtual box - connect to SignalR",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VirtualBoxStateResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "oauth2": [ ]
+          }
+        ]
+      }
+    },
+    "/virtualbox/v1/stop": {
+      "post": {
+        "tags": [
+          "VirtualBox"
+        ],
+        "summary": "Stop virtual box - disconnect from SignalR",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VirtualBoxStateResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "oauth2": [ ]
+          }
+        ]
+      }
+    },
+    "/virtualbox/v1/state": {
+      "get": {
+        "tags": [
+          "VirtualBox"
+        ],
+        "summary": "Provide virtual box state - e.g. info about connection",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/VirtualBoxStateResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VirtualBoxStateResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VirtualBoxStateResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server Error",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "oauth2": [ ]
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "CreateCustomerReservationInputData": {
+        "type": "object",
+        "properties": {
+          "customerInput": {
+            "type": "string",
+            "description": "Customer input (aka package barcode) from customer",
+            "nullable": true
+          },
+          "cultureInfo": {
+            "type": "string",
+            "description": "Selected language by customer (cs-CZ, en-US...)",
+            "nullable": true,
+            "example": "cs-CZ"
+          },
+          "customerInputSource": {
+            "type": "string",
+            "description": "Defines source of customer input - Undefined, Scanner, Manual",
+            "nullable": true,
+            "example": "Scanner"
+          }
+        },
+        "additionalProperties": false,
+        "description": "Create customer reservation input data"
+      },
+      "GraphQLQuery": {
+        "type": "object",
+        "properties": {
+          "operationName": {
+            "type": "string",
+            "nullable": true
+          },
+          "namedQuery": {
+            "type": "string",
+            "nullable": true
+          },
+          "query": {
+            "type": "string",
+            "nullable": true
+          },
+          "variables": {
+            "nullable": true
+          },
+          "variablesJson": {
+            "type": "object",
+            "additionalProperties": {
+              "$ref": "#/components/schemas/JToken"
+            },
+            "nullable": true,
+            "readOnly": true
+          },
+          "parameters": {
+            "type": "object",
+            "additionalProperties": { },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "JToken": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/JToken"
+        }
+      },
+      "ReservationStateResponse": {
+        "type": "object",
+        "properties": {
+          "timeStamp": {
+            "type": "string",
+            "description": "Timestamp",
+            "format": "date-time"
+          },
+          "reservationId": {
+            "type": "string",
+            "description": "Reservation id"
+          },
+          "state": {
+            "type": "string",
+            "description": "Reservation state"
+          }
+        },
+        "additionalProperties": false,
+        "description": "Virtual box reservation state"
+      },
+      "UpdateReservationInputData": {
+        "type": "object",
+        "properties": {
+          "state": {
+            "type": "string",
+            "description": "Required state - NEW, PICKED_UP, RETURNED, etc",
+            "nullable": true,
+            "example": "STOCKED"
+          }
+        },
+        "additionalProperties": false,
+        "description": "Update reservation input data"
+      },
+      "VirtualBoxStateResponse": {
+        "type": "object",
+        "properties": {
+          "timeStamp": {
+            "type": "string",
+            "description": "Timestamp",
+            "format": "date-time"
+          },
+          "hubConnectionState": {
+            "type": "string",
+            "description": "Hub connection state as a string"
+          },
+          "url": {
+            "type": "string",
+            "description": "Hub connection url",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Virtual box state"
+      }
+    },
+    "securitySchemes": {
+      "oauth2": {
+        "type": "oauth2",
+        "flows": {
+          "password": {
+            "tokenUrl": "https://identitymanagement.phx-test.alza.cz/connect/token",
+            "scopes": {
+              "konzole_access": "Konzole API"
+            }
+          }
+        }
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "Reservations",
+      "description": "Basic controller for virtual box reservations"
+    },
+    {
+      "name": "VirtualBox",
+      "description": "Basic controller for virtual box"
+    }
+  ]
+}
