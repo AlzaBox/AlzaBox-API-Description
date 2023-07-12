@@ -844,6 +844,14 @@
             }
           },
           {
+            "name": "filter[barcode]",
+            "in": "query",
+            "description": "Package barcode",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
             "name": "fields[reservation]",
             "in": "query",
             "description": "Array of fields that should be returned.\r\nSupported values: blocked",
