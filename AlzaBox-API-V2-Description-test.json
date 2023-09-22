@@ -115,7 +115,7 @@
         },
         "security": [
           {
-            "oauth2": [ ]
+            "oauth2": []
           }
         ]
       },
@@ -242,7 +242,7 @@
         },
         "security": [
           {
-            "oauth2": [ ]
+            "oauth2": []
           }
         ]
       }
@@ -346,7 +346,7 @@
         },
         "security": [
           {
-            "oauth2": [ ]
+            "oauth2": []
           }
         ]
       }
@@ -439,7 +439,7 @@
         },
         "security": [
           {
-            "oauth2": [ ]
+            "oauth2": []
           }
         ]
       },
@@ -554,7 +554,7 @@
         },
         "security": [
           {
-            "oauth2": [ ]
+            "oauth2": []
           }
         ]
       },
@@ -679,7 +679,7 @@
         },
         "security": [
           {
-            "oauth2": [ ]
+            "oauth2": []
           }
         ]
       }
@@ -771,7 +771,7 @@
         },
         "security": [
           {
-            "oauth2": [ ]
+            "oauth2": []
           }
         ]
       }
@@ -929,7 +929,7 @@
         },
         "security": [
           {
-            "oauth2": [ ]
+            "oauth2": []
           }
         ]
       }
@@ -1030,7 +1030,7 @@
         },
         "security": [
           {
-            "oauth2": [ ]
+            "oauth2": []
           }
         ]
       },
@@ -1133,7 +1133,7 @@
         },
         "security": [
           {
-            "oauth2": [ ]
+            "oauth2": []
           }
         ]
       },
@@ -1236,7 +1236,7 @@
         },
         "security": [
           {
-            "oauth2": [ ]
+            "oauth2": []
           }
         ]
       }
@@ -2804,6 +2804,12 @@
             "description": "Status of a reservation, possible values: STOCKED, STOCKED_LOCKED, CANCELED",
             "nullable": true,
             "example": "STOCKED"
+          },
+          "startReservationDate": {
+            "type": "string",
+            "description": "Time from which the reservation should be stocked in UTC",
+            "format": "date-time",
+            "nullable": true
           },
           "expirationDate": {
             "type": "string",
