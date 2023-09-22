@@ -1886,6 +1886,11 @@
             "description": "Message",
             "nullable": true
           },
+          "messageCode": {
+            "type": "string",
+            "description": "Computer readable message code",
+            "nullable": true
+          },
           "locations": {
             "type": "array",
             "items": {
