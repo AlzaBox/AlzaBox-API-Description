@@ -2805,6 +2805,12 @@
             "nullable": true,
             "example": "STOCKED"
           },
+          "startReservationDate": {
+            "type": "string",
+            "description": "Time from which the reservation should be stocked in UTC",
+            "format": "date-time",
+            "nullable": true
+          },
           "expirationDate": {
             "type": "string",
             "description": "Expiration date in UTC",
