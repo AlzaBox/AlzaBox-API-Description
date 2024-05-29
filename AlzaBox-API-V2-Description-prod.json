@@ -854,18 +854,20 @@
           {
             "name": "fields[reservation]",
             "in": "query",
-            "description": "Array of fields that should be returned.\r\nSupported values: blocked",
+            "description": "Array of fields that should be returned.\r\nSupported values: blocked, openerKey",
             "schema": {
               "type": "array",
               "items": {
                 "type": "string"
               },
               "example": [
-                "blocked"
+                "blocked",
+                "openerKey"
               ]
             },
             "example": [
-              "blocked"
+              "blocked",
+              "openerKey"
             ]
           }
         ],
@@ -955,18 +957,20 @@
           {
             "name": "fields[reservation]",
             "in": "query",
-            "description": "Array of fields that should be returned.\r\nSupported values: blocked",
+            "description": "Array of fields that should be returned.\r\nSupported values: blocked, openerKey",
             "schema": {
               "type": "array",
               "items": {
                 "type": "string"
               },
               "example": [
-                "blocked"
+                "blocked",
+                "openerKey"
               ]
             },
             "example": [
-              "blocked"
+              "blocked",
+              "openerKey"
             ]
           }
         ],
@@ -1043,18 +1047,20 @@
           {
             "name": "fields[reservation]",
             "in": "query",
-            "description": "Array of fields that should be returned.\r\nSupported values: blocked",
+            "description": "Array of fields that should be returned.\r\nSupported values: blocked, openerKey",
             "schema": {
               "type": "array",
               "items": {
                 "type": "string"
               },
               "example": [
-                "blocked"
+                "blocked",
+                "openerKey"
               ]
             },
             "example": [
-              "blocked"
+              "blocked",
+              "openerKey"
             ]
           }
         ],
@@ -1146,18 +1152,20 @@
           {
             "name": "fields[reservation]",
             "in": "query",
-            "description": "Array of fields that should be returned.\r\nSupported values: blocked",
+            "description": "Array of fields that should be returned.\r\nSupported values: blocked, openerKey",
             "schema": {
               "type": "array",
               "items": {
                 "type": "string"
               },
               "example": [
-                "blocked"
+                "blocked",
+                "openerKey"
               ]
             },
             "example": [
-              "blocked"
+              "blocked",
+              "openerKey"
             ]
           }
         ],
@@ -2466,6 +2474,11 @@
           "blocked": {
             "type": "boolean",
             "description": "Status of a reservation blocking - blocked reservation can not be picked up by customer from the box",
+            "nullable": true
+          },
+          "openerKey": {
+            "type": "string",
+            "description": "Unique reservation identification compatible with toher parts of the system",
             "nullable": true
           },
           "createdAt": {
