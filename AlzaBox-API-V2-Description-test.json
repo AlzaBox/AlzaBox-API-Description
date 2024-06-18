@@ -862,12 +862,16 @@
               },
               "example": [
                 "blocked",
-                "openerKey"
+                "openerKey",
+                "docNumber",
+                "flowType"
               ]
             },
             "example": [
               "blocked",
-              "openerKey"
+              "openerKey",
+              "docNumber",
+              "flowType"
             ]
           }
         ],
@@ -965,12 +969,16 @@
               },
               "example": [
                 "blocked",
-                "openerKey"
+                "openerKey",
+                "docNumber",
+                "flowType"
               ]
             },
             "example": [
               "blocked",
-              "openerKey"
+              "openerKey",
+              "docNumber",
+              "flowType"
             ]
           }
         ],
@@ -1055,12 +1063,16 @@
               },
               "example": [
                 "blocked",
-                "openerKey"
+                "openerKey",
+                "docNumber",
+                "flowType"
               ]
             },
             "example": [
               "blocked",
-              "openerKey"
+              "openerKey",
+              "docNumber",
+              "flowType"
             ]
           }
         ],
@@ -1160,12 +1172,16 @@
               },
               "example": [
                 "blocked",
-                "openerKey"
+                "openerKey",
+                "docNumber",
+                "flowType"
               ]
             },
             "example": [
               "blocked",
-              "openerKey"
+              "openerKey",
+              "docNumber",
+              "flowType"
             ]
           }
         ],
@@ -1638,6 +1654,18 @@
       "CreateReservationAttributesV2": {
         "type": "object",
         "properties": {
+          "docNumber": {
+            "type": "string",
+            "description": "Additional document number",
+            "nullable": true,
+            "example": "DOC123"
+          },
+          "flowType": {
+            "type": "string",
+            "description": "Reservation flow type",
+            "nullable": true,
+            "example": "OUTLET"
+          },
           "expirationDate": {
             "type": "string",
             "description": "Expiration date in UTC",
@@ -2497,6 +2525,16 @@
             "type": "string",
             "description": "Start reservation date in UTC",
             "format": "date-time",
+            "nullable": true
+          },
+          "docNumber": {
+            "type": "string",
+            "description": "Partner additional document number",
+            "nullable": true
+          },
+          "flowType": {
+            "type": "string",
+            "description": "Reservation flow type (OUTLET - classic flow from partner to customer, INLET - reversed flow known as AlzaPort)",
             "nullable": true
           },
           "packages": {
