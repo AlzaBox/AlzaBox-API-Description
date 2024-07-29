@@ -1854,6 +1854,19 @@
         "additionalProperties": false,
         "description": "AlzaBox next reservation time representation for partners"
       },
+      "CreateReservationPackageRequirements": {
+        "type": "object",
+        "properties": {
+          "maxSlotSize": {
+            "type": "string",
+            "description": "Max slot size.",
+            "nullable": true,
+            "example": "M"
+          }
+        },
+        "additionalProperties": false,
+        "description": "The requirements of the package"
+      },
       "CreateReservationPackageV2": {
         "type": "object",
         "properties": {
@@ -1880,6 +1893,15 @@
             "type": "string",
             "description": "Barcode",
             "example": "PKG123"
+          },
+          "requirements": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/CreateReservationPackageRequirements"
+              }
+            ],
+            "description": "The requirements of the package",
+            "nullable": true
           }
         },
         "additionalProperties": false,
@@ -1924,10 +1946,32 @@
             "format": "double",
             "nullable": true,
             "example": 1.3
+          },
+          "requirements": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/CreateReservationProductRequirements"
+              }
+            ],
+            "description": "The requirements of the product",
+            "nullable": true
           }
         },
         "additionalProperties": false,
         "description": "AlzaBox product representation for partners"
+      },
+      "CreateReservationProductRequirements": {
+        "type": "object",
+        "properties": {
+          "maxSlotSize": {
+            "type": "string",
+            "description": "Max slot size.",
+            "nullable": true,
+            "example": "M"
+          }
+        },
+        "additionalProperties": false,
+        "description": "The requirements of the product"
       },
       "CreateReservationRelationshipsV2": {
         "type": "object",
