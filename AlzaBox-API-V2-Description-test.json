@@ -115,7 +115,7 @@
         },
         "security": [
           {
-            "oauth2": [ ]
+            "oauth2": []
           }
         ]
       },
@@ -242,7 +242,7 @@
         },
         "security": [
           {
-            "oauth2": [ ]
+            "oauth2": []
           }
         ]
       }
@@ -346,7 +346,7 @@
         },
         "security": [
           {
-            "oauth2": [ ]
+            "oauth2": []
           }
         ]
       }
@@ -439,7 +439,7 @@
         },
         "security": [
           {
-            "oauth2": [ ]
+            "oauth2": []
           }
         ]
       },
@@ -554,7 +554,7 @@
         },
         "security": [
           {
-            "oauth2": [ ]
+            "oauth2": []
           }
         ]
       },
@@ -679,7 +679,7 @@
         },
         "security": [
           {
-            "oauth2": [ ]
+            "oauth2": []
           }
         ]
       }
@@ -771,7 +771,7 @@
         },
         "security": [
           {
-            "oauth2": [ ]
+            "oauth2": []
           }
         ]
       }
@@ -864,14 +864,18 @@
                 "blocked",
                 "openerKey",
                 "docNumber",
-                "flowType"
+                "flowType",
+                "prereservationExpirationDate",
+                "nextReservationTimes"
               ]
             },
             "example": [
               "blocked",
               "openerKey",
               "docNumber",
-              "flowType"
+              "flowType",
+              "prereservationExpirationDate",
+              "nextReservationTimes"
             ]
           }
         ],
@@ -935,7 +939,7 @@
         },
         "security": [
           {
-            "oauth2": [ ]
+            "oauth2": []
           }
         ]
       }
@@ -971,14 +975,18 @@
                 "blocked",
                 "openerKey",
                 "docNumber",
-                "flowType"
+                "flowType",
+                "prereservationExpirationDate",
+                "nextReservationTimes"
               ]
             },
             "example": [
               "blocked",
               "openerKey",
               "docNumber",
-              "flowType"
+              "flowType",
+              "prereservationExpirationDate",
+              "nextReservationTimes"
             ]
           }
         ],
@@ -1042,7 +1050,7 @@
         },
         "security": [
           {
-            "oauth2": [ ]
+            "oauth2": []
           }
         ]
       },
@@ -1065,14 +1073,18 @@
                 "blocked",
                 "openerKey",
                 "docNumber",
-                "flowType"
+                "flowType",
+                "prereservationExpirationDate",
+                "nextReservationTimes"
               ]
             },
             "example": [
               "blocked",
               "openerKey",
               "docNumber",
-              "flowType"
+              "flowType",
+              "prereservationExpirationDate",
+              "nextReservationTimes"
             ]
           }
         ],
@@ -1151,7 +1163,7 @@
         },
         "security": [
           {
-            "oauth2": [ ]
+            "oauth2": []
           }
         ]
       },
@@ -1174,14 +1186,18 @@
                 "blocked",
                 "openerKey",
                 "docNumber",
-                "flowType"
+                "flowType",
+                "prereservationExpirationDate",
+                "nextReservationTimes"
               ]
             },
             "example": [
               "blocked",
               "openerKey",
               "docNumber",
-              "flowType"
+              "flowType",
+              "prereservationExpirationDate",
+              "nextReservationTimes"
             ]
           }
         ],
@@ -1260,7 +1276,7 @@
         },
         "security": [
           {
-            "oauth2": [ ]
+            "oauth2": []
           }
         ]
       }
@@ -1677,6 +1693,12 @@
             "format": "date-time",
             "nullable": true
           },
+          "prereservationExpirationDate": {
+            "type": "string",
+            "description": "Prereservation expiration date in UTC\r\nEnables the prereservation functionality",
+            "format": "date-time",
+            "nullable": true
+          },
           "blocked": {
             "type": "boolean",
             "description": "Status of a reservation blocking - blocked reservation can not be picked up by customer from the box",
@@ -1745,27 +1767,6 @@
         },
         "additionalProperties": false,
         "description": "Input for creating reservation in AlzaBox"
-      },
-      "CreateReservationBoxV2": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "integer",
-            "description": "Id of a box",
-            "format": "int32",
-            "nullable": true,
-            "example": 1234
-          },
-          "pid": {
-            "maxLength": 100,
-            "type": "string",
-            "description": "Partner Id of AlzaBox",
-            "nullable": true,
-            "example": "PID9876"
-          }
-        },
-        "additionalProperties": false,
-        "description": "Class used for specifying in which AlzaBox reservation should be created"
       },
       "CreateReservationDataV2": {
         "type": "object",
@@ -1847,6 +1848,12 @@
           "expirationDate": {
             "type": "string",
             "description": "Next expiration date in UTC",
+            "format": "date-time",
+            "nullable": true
+          },
+          "prereservationExpirationDate": {
+            "type": "string",
+            "description": "Next prereservation expiration date in UTC\r\nEnables the prereservation functionality",
             "format": "date-time",
             "nullable": true
           }
@@ -1973,16 +1980,71 @@
         "additionalProperties": false,
         "description": "The requirements of the product"
       },
+      "CreateReservationRelationshipsBoxV2": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Id of a box",
+            "format": "int32",
+            "nullable": true,
+            "example": 1234
+          },
+          "pid": {
+            "maxLength": 100,
+            "type": "string",
+            "description": "Partner Id of AlzaBox",
+            "nullable": true,
+            "example": "PID9876"
+          }
+        },
+        "additionalProperties": false,
+        "description": "Class used for specifying in which AlzaBox reservation should be created"
+      },
+      "CreateReservationRelationshipsReservationV2": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "maxLength": 35,
+            "type": "string",
+            "description": "Reservation type - Eshop, Delivery, etc.",
+            "example": "Eshop"
+          },
+          "key": {
+            "maxLength": 35,
+            "type": "string",
+            "description": "ID/UUID of reservation.",
+            "example": "12345"
+          },
+          "partner": {
+            "maxLength": 35,
+            "type": "string",
+            "description": "Partner name.",
+            "example": "Alza"
+          }
+        },
+        "additionalProperties": false,
+        "description": "Create reservation relationships to reservation."
+      },
       "CreateReservationRelationshipsV2": {
         "type": "object",
         "properties": {
           "box": {
             "allOf": [
               {
-                "$ref": "#/components/schemas/CreateReservationBoxV2"
+                "$ref": "#/components/schemas/CreateReservationRelationshipsBoxV2"
               }
             ],
             "description": "Box in which reservations should be made"
+          },
+          "reservation": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/CreateReservationRelationshipsReservationV2"
+              }
+            ],
+            "description": "Relationships to reservation.",
+            "nullable": true
           }
         },
         "additionalProperties": false,
@@ -2571,6 +2633,12 @@
             "format": "date-time",
             "nullable": true
           },
+          "prereservationExpirationDate": {
+            "type": "string",
+            "description": "Prereservation expiration date in UTC",
+            "format": "date-time",
+            "nullable": true
+          },
           "docNumber": {
             "type": "string",
             "description": "Partner additional document number",
@@ -2609,10 +2677,42 @@
             "description": "Reservation type, possible values: IMMEDIATE, STATIC, TIME, NON_BINDING",
             "nullable": true,
             "example": "TIME"
+          },
+          "nextReservationTimes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ReservationNextReservationTimesResponseItemV2"
+            },
+            "description": "Next reservation times"
           }
         },
         "additionalProperties": false,
         "description": "Attributes of reservation"
+      },
+      "ReservationNextReservationTimesResponseItemV2": {
+        "type": "object",
+        "properties": {
+          "expirationDate": {
+            "type": "string",
+            "description": "Expiration date in UTC",
+            "format": "date-time",
+            "nullable": true
+          },
+          "startReservationDate": {
+            "type": "string",
+            "description": "Start reservation date in UTC",
+            "format": "date-time",
+            "nullable": true
+          },
+          "prereservationExpirationDate": {
+            "type": "string",
+            "description": "Prereservation expiration date in UTC",
+            "format": "date-time",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Next reservation timse information response"
       },
       "ReservationPackageResponseItemV2": {
         "type": "object",
@@ -2988,6 +3088,12 @@
             "format": "date-time",
             "nullable": true
           },
+          "prereservationExpirationDate": {
+            "type": "string",
+            "description": "Prereservation expiration date in UTC",
+            "format": "date-time",
+            "nullable": true
+          },
           "blocked": {
             "type": "boolean",
             "description": "Status of a reservation blocking - blocked reservation can not be picked up by customer from the box",
@@ -3010,6 +3116,13 @@
             ],
             "description": "Payment information",
             "nullable": true
+          },
+          "nextReservationTimes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CreateReservationNextReservationTime"
+            },
+            "description": "Next reservation times"
           }
         },
         "additionalProperties": false,
