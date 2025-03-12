@@ -1,7 +1,7 @@
 {
   "openapi": "3.0.1",
   "info": {
-    "title": "AlzaBox API v2",
+    "title": "Parcel Lockers Connector",
     "description": "Connector between partners and AlzaBoxes' ecosystem.",
     "contact": {
       "name": "Alza.cz a.s.",
@@ -11,15 +11,96 @@
     "license": {
       "name": "All rights reserved"
     },
-    "version": "v2"
+    "version": "v1"
   },
   "paths": {
-    "/parcel-lockers/v2/box": {
+    "/api/graphql": {
+      "post": {
+        "tags": [
+          "GraphQL"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json-patch+json": {
+              "schema": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/GraphQLQuery"
+                  }
+                ]
+              }
+            },
+            "application/json": {
+              "schema": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/GraphQLQuery"
+                  }
+                ]
+              }
+            },
+            "text/json": {
+              "schema": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/GraphQLQuery"
+                  }
+                ]
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/GraphQLQuery"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "security": [
+          {
+            "oauth2": [ ]
+          }
+        ]
+      }
+    },
+    "/api/healthz": {
       "get": {
         "tags": [
-          "Boxes"
+          "Healthz"
         ],
-        "summary": "Gets AlzaBox information",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/metrics": {
+      "get": {
+        "tags": [
+          "Metrics"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/parcel-lockers/v1/box": {
+      "get": {
+        "tags": [
+          "ParcelLockers"
+        ],
+        "summary": "Gets AlzaBoxes information with additional information about fitting packages",
         "parameters": [
           {
             "name": "filter[id]",
@@ -27,42 +108,58 @@
             "description": "Id of a box",
             "schema": {
               "type": "integer",
-              "format": "int32",
-              "example": 1234
-            },
-            "example": 1234
+              "format": "int32"
+            }
           },
           {
-            "name": "filter[pid]",
+            "name": "filter[package][width]",
             "in": "query",
-            "description": "PId of a box",
+            "description": "Array of package widths in centimeters. \r\nFunctionality should not be used because of performance problems",
             "schema": {
-              "maxLength": 100,
-              "type": "string",
-              "example": "PID9876"
-            },
-            "example": "PID9876"
+              "type": "array",
+              "items": {
+                "type": "integer",
+                "format": "int32"
+              },
+              "deprecated": true
+            }
+          },
+          {
+            "name": "filter[package][height]",
+            "in": "query",
+            "description": "Array of package heights in centimeters. \r\nFunctionality should not be used because of performance problems",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "integer",
+                "format": "int32"
+              },
+              "deprecated": true
+            }
+          },
+          {
+            "name": "filter[package][depth]",
+            "in": "query",
+            "description": "Array of package depths in centimeters. \r\nFunctionality should not be used because of performance problems",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "integer",
+                "format": "int32"
+              },
+              "deprecated": true
+            }
           },
           {
             "name": "fields[box]",
             "in": "query",
-            "description": "Array of fields that should be returned\r\n(name, available, address, gps, description, openingHours, photos, slots, occupancy, deliveryPin)",
+            "description": "Array of fields that should be returned\r\n(name, available, address, gps, description, photos, openingHours, slots, occupancy, deliveryPin)",
             "schema": {
               "type": "array",
               "items": {
                 "type": "string"
-              },
-              "example": [
-                "name",
-                "description",
-                "address"
-              ]
-            },
-            "example": [
-              "name",
-              "description",
-              "address"
-            ]
+              }
+            }
           }
         ],
         "responses": {
@@ -71,7 +168,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/GetBoxResponseV2"
+                  "$ref": "#/components/schemas/GetBoxesResponseV1"
                 }
               }
             }
@@ -81,7 +178,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/GetBoxErrorResponseV2"
+                  "$ref": "#/components/schemas/GetBoxesErrorResponseV1"
                 }
               }
             }
@@ -94,7 +191,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/GetBoxErrorResponseV2"
+                  "$ref": "#/components/schemas/GetBoxesErrorResponseV1"
                 }
               }
             }
@@ -104,7 +201,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/GetBoxErrorResponseV2"
+                  "$ref": "#/components/schemas/GetBoxesErrorResponseV1"
                 }
               }
             }
@@ -115,673 +212,17 @@
         },
         "security": [
           {
-            "oauth2": []
-          }
-        ]
-      },
-      "patch": {
-        "tags": [
-          "Boxes"
-        ],
-        "summary": "Updates AlzaBox partner's information",
-        "parameters": [
-          {
-            "name": "fields[box]",
-            "in": "query",
-            "description": "Array of fields that is possible to return\r\n(name, available, address, gps, description, openingHours, photos, slots, occupancy, deliveryPin)",
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              },
-              "example": [
-                "name",
-                "description",
-                "address"
-              ]
-            },
-            "example": [
-              "name",
-              "description",
-              "address"
-            ]
-          }
-        ],
-        "requestBody": {
-          "description": "Input for updating AlzaBox",
-          "content": {
-            "application/json-patch+json": {
-              "schema": {
-                "allOf": [
-                  {
-                    "$ref": "#/components/schemas/UpdateBoxBodyInputV2"
-                  }
-                ],
-                "description": "Input body for updating AlzaBox"
-              }
-            },
-            "application/json": {
-              "schema": {
-                "allOf": [
-                  {
-                    "$ref": "#/components/schemas/UpdateBoxBodyInputV2"
-                  }
-                ],
-                "description": "Input body for updating AlzaBox"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "allOf": [
-                  {
-                    "$ref": "#/components/schemas/UpdateBoxBodyInputV2"
-                  }
-                ],
-                "description": "Input body for updating AlzaBox"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "allOf": [
-                  {
-                    "$ref": "#/components/schemas/UpdateBoxBodyInputV2"
-                  }
-                ],
-                "description": "Input body for updating AlzaBox"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Success",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/UpdateBoxResponseV2"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/UpdateBoxErrorResponseV2"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "403": {
-            "description": "Forbidden",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/UpdateBoxErrorResponseV2"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Not Found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/UpdateBoxErrorResponseV2"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Server Error"
-          }
-        },
-        "security": [
-          {
-            "oauth2": []
+            "oauth2": [ ]
           }
         ]
       }
     },
-    "/parcel-lockers/v2/boxes": {
+    "/parcel-lockers/v1/reservation": {
       "get": {
         "tags": [
-          "Boxes"
+          "ParcelLockers"
         ],
-        "summary": "Gets AlzaBoxes information",
-        "parameters": [
-          {
-            "name": "fields[box]",
-            "in": "query",
-            "description": "Array of fields that should be returned\r\n(name, available, address, gps, description, openingHours, photos, slots, occupancy, deliveryPin)",
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              },
-              "example": [
-                "name",
-                "description",
-                "address"
-              ]
-            },
-            "example": [
-              "name",
-              "description",
-              "address"
-            ]
-          },
-          {
-            "name": "page[limit]",
-            "in": "query",
-            "description": "Page limit",
-            "schema": {
-              "type": "integer",
-              "format": "int32",
-              "default": 100
-            }
-          },
-          {
-            "name": "page[offset]",
-            "in": "query",
-            "description": "Page offset",
-            "schema": {
-              "type": "integer",
-              "format": "int32",
-              "default": 0
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Success",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/GetBoxesResponseV2"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/GetBoxesErrorResponseV2"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "403": {
-            "description": "Forbidden",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/GetBoxesErrorResponseV2"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Not Found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/GetBoxesErrorResponseV2"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Server Error"
-          }
-        },
-        "security": [
-          {
-            "oauth2": []
-          }
-        ]
-      }
-    },
-    "/parcel-lockers/v2/courier": {
-      "get": {
-        "tags": [
-          "Couriers"
-        ],
-        "summary": "Gets courier",
-        "parameters": [
-          {
-            "name": "filter[login]",
-            "in": "query",
-            "description": "Courier's login",
-            "schema": {
-              "maxLength": 30,
-              "type": "string",
-              "example": "JohnDoe123"
-            },
-            "example": "JohnDoe123"
-          },
-          {
-            "name": "fields[courier]",
-            "in": "query",
-            "description": "Array of fields that should be returned.\r\nSupported values: boxes, boxesAccessType",
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              },
-              "example": [
-                "boxes",
-                "boxesAccessType"
-              ]
-            },
-            "example": [
-              "boxes",
-              "boxesAccessType"
-            ]
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Success",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/GetCourierResponse"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/GetCourierErrorResponse"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "403": {
-            "description": "Forbidden",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/GetCourierErrorResponse"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Not Found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/GetCourierErrorResponse"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Server Error"
-          }
-        },
-        "security": [
-          {
-            "oauth2": []
-          }
-        ]
-      },
-      "post": {
-        "tags": [
-          "Couriers"
-        ],
-        "summary": "Creates courier",
-        "parameters": [
-          {
-            "name": "fields[courier]",
-            "in": "query",
-            "description": "Array of fields that should be returned.\r\nSupported values: boxes, boxesAccessType",
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              },
-              "example": [
-                "boxes",
-                "boxesAccessType"
-              ]
-            },
-            "example": [
-              "boxes",
-              "boxesAccessType"
-            ]
-          }
-        ],
-        "requestBody": {
-          "description": "Create courier input",
-          "content": {
-            "application/json-patch+json": {
-              "schema": {
-                "allOf": [
-                  {
-                    "$ref": "#/components/schemas/CreateOrUpdateCourierBodyInput"
-                  }
-                ],
-                "description": "Input for CreateCourier or UpdateCourier endpoint"
-              }
-            },
-            "application/json": {
-              "schema": {
-                "allOf": [
-                  {
-                    "$ref": "#/components/schemas/CreateOrUpdateCourierBodyInput"
-                  }
-                ],
-                "description": "Input for CreateCourier or UpdateCourier endpoint"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "allOf": [
-                  {
-                    "$ref": "#/components/schemas/CreateOrUpdateCourierBodyInput"
-                  }
-                ],
-                "description": "Input for CreateCourier or UpdateCourier endpoint"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "allOf": [
-                  {
-                    "$ref": "#/components/schemas/CreateOrUpdateCourierBodyInput"
-                  }
-                ],
-                "description": "Input for CreateCourier or UpdateCourier endpoint"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Success",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/CreateCourierResponse"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/CreateCourierErrorResponse"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "403": {
-            "description": "Forbidden",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/CreateCourierErrorResponse"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Server Error"
-          }
-        },
-        "security": [
-          {
-            "oauth2": []
-          }
-        ]
-      },
-      "patch": {
-        "tags": [
-          "Couriers"
-        ],
-        "summary": "Updates courier",
-        "parameters": [
-          {
-            "name": "fields[courier]",
-            "in": "query",
-            "description": "Array of fields that should be returned.\r\nSupported values: boxes, boxesAccessType",
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              },
-              "example": [
-                "boxes",
-                "boxesAccessType"
-              ]
-            },
-            "example": [
-              "boxes",
-              "boxesAccessType"
-            ]
-          }
-        ],
-        "requestBody": {
-          "description": "Update courier input",
-          "content": {
-            "application/json-patch+json": {
-              "schema": {
-                "allOf": [
-                  {
-                    "$ref": "#/components/schemas/CreateOrUpdateCourierBodyInput"
-                  }
-                ],
-                "description": "Input for CreateCourier or UpdateCourier endpoint"
-              }
-            },
-            "application/json": {
-              "schema": {
-                "allOf": [
-                  {
-                    "$ref": "#/components/schemas/CreateOrUpdateCourierBodyInput"
-                  }
-                ],
-                "description": "Input for CreateCourier or UpdateCourier endpoint"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "allOf": [
-                  {
-                    "$ref": "#/components/schemas/CreateOrUpdateCourierBodyInput"
-                  }
-                ],
-                "description": "Input for CreateCourier or UpdateCourier endpoint"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "allOf": [
-                  {
-                    "$ref": "#/components/schemas/CreateOrUpdateCourierBodyInput"
-                  }
-                ],
-                "description": "Input for CreateCourier or UpdateCourier endpoint"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Success",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/UpdateCourierResponse"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/UpdateCourierErrorResponse"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "403": {
-            "description": "Forbidden",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/UpdateCourierErrorResponse"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Not Found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/UpdateCourierErrorResponse"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Server Error"
-          }
-        },
-        "security": [
-          {
-            "oauth2": []
-          }
-        ]
-      }
-    },
-    "/parcel-lockers/v2/couriers": {
-      "get": {
-        "tags": [
-          "Couriers"
-        ],
-        "summary": "Gets couriers",
-        "parameters": [
-          {
-            "name": "page[limit]",
-            "in": "query",
-            "description": "Limit number of records",
-            "schema": {
-              "type": "integer",
-              "format": "int32",
-              "default": 100
-            }
-          },
-          {
-            "name": "page[offset]",
-            "in": "query",
-            "description": "Offset of records",
-            "schema": {
-              "type": "integer",
-              "format": "int32",
-              "default": 0
-            }
-          },
-          {
-            "name": "fields[courier]",
-            "in": "query",
-            "description": "Array of fields that should be returned.\r\nSupported values: boxes, boxesAccessType",
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              },
-              "example": [
-                "boxes",
-                "boxesAccessType"
-              ]
-            },
-            "example": [
-              "boxes",
-              "boxesAccessType"
-            ]
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Success",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/GetCouriersResponse"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/GetCouriersErrorResponse"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "403": {
-            "description": "Forbidden",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/GetCouriersErrorResponse"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Server Error"
-          }
-        },
-        "security": [
-          {
-            "oauth2": []
-          }
-        ]
-      }
-    },
-    "/parcel-lockers/v2/reservations": {
-      "get": {
-        "tags": [
-          "Reservations"
-        ],
-        "summary": "Get all reservations that meet filter criteria",
+        "summary": "Finds all reservations",
         "parameters": [
           {
             "name": "filter[status]",
@@ -836,47 +277,15 @@
             }
           },
           {
-            "name": "filter[blocked]",
-            "in": "query",
-            "description": "Status of blocking - blocked reservation can not be picked up by customer from the box",
-            "schema": {
-              "type": "boolean"
-            }
-          },
-          {
-            "name": "filter[barcode]",
-            "in": "query",
-            "description": "Package barcode",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
             "name": "fields[reservation]",
             "in": "query",
-            "description": "Array of fields that should be returned.\r\nSupported values: blocked, openerKey",
+            "description": "Array of fields that should be returned.\r\nSupported values: No supported values in v1 yet",
             "schema": {
               "type": "array",
               "items": {
                 "type": "string"
-              },
-              "example": [
-                "blocked",
-                "openerKey",
-                "docNumber",
-                "flowType",
-                "prereservationExpirationDate",
-                "nextReservationTimes"
-              ]
-            },
-            "example": [
-              "blocked",
-              "openerKey",
-              "docNumber",
-              "flowType",
-              "prereservationExpirationDate",
-              "nextReservationTimes"
-            ]
+              }
+            }
           }
         ],
         "responses": {
@@ -885,7 +294,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/GetReservationsResponseV2"
+                  "$ref": "#/components/schemas/GetReservationsResponse"
                 }
               }
             }
@@ -895,7 +304,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/GetReservationsErrorResponseV2"
+                  "$ref": "#/components/schemas/GetReservationsErrorResponse"
                 }
               }
             }
@@ -908,7 +317,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/GetReservationsErrorResponseV2"
+                  "$ref": "#/components/schemas/GetReservationsErrorResponse"
                 }
               }
             }
@@ -918,7 +327,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/GetReservationsErrorResponseV2"
+                  "$ref": "#/components/schemas/GetReservationsErrorResponse"
                 }
               }
             }
@@ -928,7 +337,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/GetReservationsErrorResponseV2"
+                  "$ref": "#/components/schemas/GetReservationsErrorResponse"
                 }
               }
             }
@@ -939,166 +348,39 @@
         },
         "security": [
           {
-            "oauth2": []
-          }
-        ]
-      }
-    },
-    "/parcel-lockers/v2/reservation": {
-      "get": {
-        "tags": [
-          "Reservations"
-        ],
-        "summary": "Get one specific reservation by its id",
-        "parameters": [
-          {
-            "name": "filter[id]",
-            "in": "query",
-            "description": "Id of reservation",
-            "schema": {
-              "maxLength": 100,
-              "type": "string",
-              "example": "RES123"
-            },
-            "example": "RES123"
-          },
-          {
-            "name": "fields[reservation]",
-            "in": "query",
-            "description": "Array of fields that should be returned.\r\nSupported values: blocked, openerKey",
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              },
-              "example": [
-                "blocked",
-                "openerKey",
-                "docNumber",
-                "flowType",
-                "prereservationExpirationDate",
-                "nextReservationTimes"
-              ]
-            },
-            "example": [
-              "blocked",
-              "openerKey",
-              "docNumber",
-              "flowType",
-              "prereservationExpirationDate",
-              "nextReservationTimes"
-            ]
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Success",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/GetReservationResponseV2"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/GetReservationErrorResponseV2"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "403": {
-            "description": "Forbidden",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/GetReservationErrorResponseV2"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Not Found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/GetReservationErrorResponseV2"
-                }
-              }
-            }
-          },
-          "409": {
-            "description": "Conflict",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/GetReservationErrorResponseV2"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Server Error"
-          }
-        },
-        "security": [
-          {
-            "oauth2": []
+            "oauth2": [ ]
           }
         ]
       },
       "post": {
         "tags": [
-          "Reservations"
+          "ParcelLockers"
         ],
-        "summary": "Create new reservation",
+        "summary": "Creates new reservation",
         "parameters": [
           {
             "name": "fields[reservation]",
             "in": "query",
-            "description": "Array of fields that should be returned.\r\nSupported values: blocked, openerKey",
+            "description": "Array of fields that should be returned.\r\nSupported values: No supported values in v1 yet",
             "schema": {
               "type": "array",
               "items": {
                 "type": "string"
-              },
-              "example": [
-                "blocked",
-                "openerKey",
-                "docNumber",
-                "flowType",
-                "prereservationExpirationDate",
-                "nextReservationTimes"
-              ]
-            },
-            "example": [
-              "blocked",
-              "openerKey",
-              "docNumber",
-              "flowType",
-              "prereservationExpirationDate",
-              "nextReservationTimes"
-            ]
+              }
+            }
           }
         ],
         "requestBody": {
-          "description": "Reservation information",
+          "description": "Create information",
           "content": {
             "application/json": {
               "schema": {
                 "allOf": [
                   {
-                    "$ref": "#/components/schemas/CreateReservationBodyInputV2"
+                    "$ref": "#/components/schemas/CreateReservationBodyInputV1"
                   }
                 ],
-                "description": "Input for creating reservation in AlzaBox"
+                "description": "Reservation create input"
               }
             }
           }
@@ -1109,7 +391,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/CreateReservationResponseV2"
+                  "$ref": "#/components/schemas/CreateReservationResponse"
                 }
               }
             }
@@ -1119,7 +401,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/CreateReservationErrorResponseV2"
+                  "$ref": "#/components/schemas/CreateReservationErrorResponse"
                 }
               }
             }
@@ -1132,7 +414,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/CreateReservationErrorResponseV2"
+                  "$ref": "#/components/schemas/CreateReservationErrorResponse"
                 }
               }
             }
@@ -1142,7 +424,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/CreateReservationErrorResponseV2"
+                  "$ref": "#/components/schemas/CreateReservationErrorResponse"
                 }
               }
             }
@@ -1152,7 +434,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/CreateReservationErrorResponseV2"
+                  "$ref": "#/components/schemas/CreateReservationErrorResponse"
                 }
               }
             }
@@ -1163,42 +445,26 @@
         },
         "security": [
           {
-            "oauth2": []
+            "oauth2": [ ]
           }
         ]
       },
       "patch": {
         "tags": [
-          "Reservations"
+          "ParcelLockers"
         ],
-        "summary": "Update reservation",
+        "summary": "Updates reservation according to its state",
         "parameters": [
           {
             "name": "fields[reservation]",
             "in": "query",
-            "description": "Array of fields that should be returned.\r\nSupported values: blocked, openerKey",
+            "description": "Array of fields that should be returned.\r\nSupported values: No supported values in v1 yet",
             "schema": {
               "type": "array",
               "items": {
                 "type": "string"
-              },
-              "example": [
-                "blocked",
-                "openerKey",
-                "docNumber",
-                "flowType",
-                "prereservationExpirationDate",
-                "nextReservationTimes"
-              ]
-            },
-            "example": [
-              "blocked",
-              "openerKey",
-              "docNumber",
-              "flowType",
-              "prereservationExpirationDate",
-              "nextReservationTimes"
-            ]
+              }
+            }
           }
         ],
         "requestBody": {
@@ -1208,7 +474,7 @@
               "schema": {
                 "allOf": [
                   {
-                    "$ref": "#/components/schemas/UpdateReservationBodyInputV2"
+                    "$ref": "#/components/schemas/UpdateReservationBodyInputV1"
                   }
                 ],
                 "description": "Input for a reservation updating"
@@ -1222,7 +488,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/UpdateReservationResponseV2"
+                  "$ref": "#/components/schemas/UpdateReservationResponse"
                 }
               }
             }
@@ -1232,7 +498,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/UpdateReservationErrorResponseV2"
+                  "$ref": "#/components/schemas/UpdateReservationErrorResponse"
                 }
               }
             }
@@ -1245,7 +511,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/UpdateReservationErrorResponseV2"
+                  "$ref": "#/components/schemas/UpdateReservationErrorResponse"
                 }
               }
             }
@@ -1255,7 +521,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/UpdateReservationErrorResponseV2"
+                  "$ref": "#/components/schemas/UpdateReservationErrorResponse"
                 }
               }
             }
@@ -1265,7 +531,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/UpdateReservationErrorResponseV2"
+                  "$ref": "#/components/schemas/UpdateReservationErrorResponse"
                 }
               }
             }
@@ -1276,7 +542,201 @@
         },
         "security": [
           {
-            "oauth2": []
+            "oauth2": [ ]
+          }
+        ]
+      }
+    },
+    "/parcel-lockers/v1/boxes/seznam/feed": {
+      "get": {
+        "tags": [
+          "ParcelLockersFeed"
+        ],
+        "summary": "Gets AlzaBoxes feed for Seznam.cz",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AlzaBoxesSeznamFeedResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AlzaBoxesSeznamFeedErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AlzaBoxesSeznamFeedErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AlzaBoxesSeznamFeedErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server Error"
+          }
+        }
+      }
+    },
+    "/api/readiness": {
+      "get": {
+        "tags": [
+          "Readiness"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/serviceinfo/about": {
+      "get": {
+        "tags": [
+          "ServiceInfo"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/serviceinfo/versions": {
+      "get": {
+        "tags": [
+          "ServiceInfo"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/serviceinfo/settings": {
+      "get": {
+        "tags": [
+          "ServiceInfo"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "security": [
+          {
+            "oauth2": [ ]
+          }
+        ]
+      }
+    },
+    "/api/serviceinfo/environment-variable/{variable}": {
+      "get": {
+        "tags": [
+          "ServiceInfo"
+        ],
+        "parameters": [
+          {
+            "name": "variable",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "security": [
+          {
+            "oauth2": [ ]
+          }
+        ]
+      }
+    },
+    "/api/serviceinfo/configuration-variable/{variable}": {
+      "get": {
+        "tags": [
+          "ServiceInfo"
+        ],
+        "parameters": [
+          {
+            "name": "variable",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "security": [
+          {
+            "oauth2": [ ]
+          }
+        ]
+      }
+    },
+    "/api/serviceinfo/headers": {
+      "get": {
+        "tags": [
+          "ServiceInfo"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "security": [
+          {
+            "oauth2": [ ]
+          }
+        ]
+      }
+    },
+    "/api/serviceinfo/userinfo": {
+      "get": {
+        "tags": [
+          "ServiceInfo"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "security": [
+          {
+            "oauth2": [ ]
           }
         ]
       }
@@ -1319,21 +779,19 @@
         "additionalProperties": false,
         "description": "Response Address of a box"
       },
-      "AlzaBoxAttributesResponseV2": {
+      "AlzaBoxAttributesResponseV1": {
         "type": "object",
         "properties": {
           "name": {
             "maxLength": 100,
             "type": "string",
             "description": "Name of a box",
-            "nullable": true,
-            "example": "P21 - Újezd nad Lesy (OMV)"
+            "nullable": true
           },
           "available": {
             "type": "boolean",
             "description": "Is box available",
-            "nullable": true,
-            "example": true
+            "nullable": true
           },
           "address": {
             "allOf": [
@@ -1353,11 +811,43 @@
             "description": "GPS information",
             "nullable": true
           },
+          "fittingPackages": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PackageResponseItem"
+            },
+            "description": "Packages which fit into AlzaBox",
+            "nullable": true,
+            "deprecated": true
+          },
+          "tooLargePackages": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PackageResponseItem"
+            },
+            "description": "Packages which are too large for AlzaBox",
+            "nullable": true,
+            "deprecated": true
+          },
+          "requiredSlots": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RequiredSlotResponseItem"
+            },
+            "description": "Required slots for packages",
+            "nullable": true,
+            "deprecated": true
+          },
+          "unavailableReason": {
+            "type": "string",
+            "description": "Reason of fitting fail",
+            "nullable": true,
+            "deprecated": true
+          },
           "description": {
             "type": "string",
             "description": "Description of placement",
-            "nullable": true,
-            "example": "Box je umístěn ze zadní strany čerpací stanice OMV."
+            "nullable": true
           },
           "photos": {
             "allOf": [
@@ -1386,41 +876,36 @@
           },
           "occupancy": {
             "type": "number",
-            "description": "AlzaBox occupancy in %",
+            "description": "AlzaBox occupancy",
             "format": "double",
-            "nullable": true,
-            "example": 8.75
+            "nullable": true
           },
           "deliveryPin": {
             "type": "string",
             "description": "Delivery Pin code for a day",
-            "nullable": true,
-            "example": "12345678"
+            "nullable": true
           }
         },
         "additionalProperties": false,
         "description": "Response for alzabox additional attributes"
       },
-      "AlzaBoxResponseItemV2": {
+      "AlzaBoxResponseItemV1": {
         "type": "object",
         "properties": {
           "id": {
             "type": "integer",
             "description": "Id of a box",
-            "format": "int32",
-            "example": 1234
+            "format": "int32"
           },
-          "pid": {
-            "maxLength": 100,
+          "type": {
             "type": "string",
-            "description": "Partner Id of a box",
-            "nullable": true,
-            "example": "PID9876"
+            "description": "Type of a box",
+            "readOnly": true
           },
           "attributes": {
             "allOf": [
               {
-                "$ref": "#/components/schemas/AlzaBoxAttributesResponseV2"
+                "$ref": "#/components/schemas/AlzaBoxAttributesResponseV1"
               }
             ],
             "description": "Attributes of a box",
@@ -1430,106 +915,98 @@
         "additionalProperties": false,
         "description": "Response information about AlzaBox"
       },
-      "BoxResponseDataV2": {
+      "AlzaBoxSeznamFeedAddress": {
         "type": "object",
         "properties": {
-          "box": {
+          "street": {
+            "maxLength": 500,
+            "type": "string",
+            "description": "Street with number"
+          },
+          "city": {
+            "maxLength": 500,
+            "type": "string",
+            "description": "City"
+          },
+          "zip": {
+            "maxLength": 20,
+            "type": "string",
+            "description": "Zip code"
+          },
+          "openingHours": {
+            "type": "string",
+            "description": "Openning hours"
+          },
+          "gps": {
             "allOf": [
               {
-                "$ref": "#/components/schemas/AlzaBoxResponseItemV2"
+                "$ref": "#/components/schemas/AlzaBoxSeznamFeedGps"
               }
             ],
-            "description": "AlzaBox information",
+            "description": "Gps coordinates",
             "nullable": true
           }
         },
         "additionalProperties": false,
-        "description": "Response data for Box endpoints"
+        "description": "Alza box feed address"
       },
-      "BoxesResponseDataV2": {
+      "AlzaBoxSeznamFeedGps": {
         "type": "object",
         "properties": {
-          "boxes": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/AlzaBoxResponseItemV2"
-            },
-            "description": "AlzaBoxes information"
-          }
-        },
-        "additionalProperties": false,
-        "description": "Useful data in get boxes reponse"
-      },
-      "CourierResponseAttributes": {
-        "type": "object",
-        "properties": {
-          "boxesAccessType": {
-            "type": "string",
-            "description": "Box access type",
-            "nullable": true,
-            "example": "SPECIFIC"
+          "latitude": {
+            "type": "number",
+            "description": "Lat",
+            "format": "double"
           },
-          "boxes": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/CourierResponseBox"
-            },
-            "description": "Boxes to which courier has access",
-            "nullable": true
+          "longitude": {
+            "type": "number",
+            "description": "Long",
+            "format": "double"
           }
         },
         "additionalProperties": false,
-        "description": "Courier response attributes"
+        "description": "Alza box feed gps"
       },
-      "CourierResponseBox": {
+      "AlzaBoxSeznamFeedPremise": {
         "type": "object",
         "properties": {
-          "id": {
+          "ic": {
             "type": "integer",
-            "description": "Id of a box",
+            "description": "Company ICO",
             "format": "int32",
-            "example": 1234
+            "readOnly": true
           },
-          "pid": {
+          "id": {
+            "type": "string",
+            "description": "Premise's id"
+          },
+          "name": {
             "maxLength": 100,
             "type": "string",
-            "description": "Partner Id of box",
-            "nullable": true,
-            "example": "PID9876"
-          }
-        },
-        "additionalProperties": false,
-        "description": "Courier response AlzaBox"
-      },
-      "CourierResponseItem": {
-        "type": "object",
-        "properties": {
-          "login": {
-            "maxLength": 30,
-            "type": "string",
-            "description": "Login of the courier",
-            "example": "JohnDoe123"
+            "description": "Name"
           },
-          "pin": {
-            "maxLength": 30,
+          "description": {
             "type": "string",
-            "description": "Pin for AlzaBox access",
-            "nullable": true,
-            "example": "123456"
+            "description": "Description"
           },
-          "attributes": {
+          "url": {
+            "type": "string",
+            "description": "Url"
+          },
+          "address": {
             "allOf": [
               {
-                "$ref": "#/components/schemas/CourierResponseAttributes"
+                "$ref": "#/components/schemas/AlzaBoxSeznamFeedAddress"
               }
             ],
-            "description": "Courier's attributes"
+            "description": "Address",
+            "nullable": true
           }
         },
         "additionalProperties": false,
-        "description": "Courier response"
+        "description": "Response for item from get feed endpoint"
       },
-      "CreateCourierErrorResponse": {
+      "AlzaBoxesSeznamFeedErrorResponse": {
         "type": "object",
         "properties": {
           "data": {
@@ -1552,165 +1029,60 @@
           }
         },
         "additionalProperties": false,
-        "description": "Error response for CreateCourier endpoint"
+        "description": "Error response for get feed endpoint"
       },
-      "CreateCourierResponse": {
+      "AlzaBoxesSeznamFeedResponse": {
         "type": "object",
         "properties": {
-          "metadata": {
-            "description": "Metadata information",
-            "default": null,
-            "nullable": true
-          },
-          "errors": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/ErrorResponseItem"
-            },
-            "description": "Errors information",
-            "default": null,
-            "nullable": true
-          },
-          "data": {
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/CourierResponseItem"
-              }
-            ],
-            "description": "Useful data"
-          }
-        },
-        "additionalProperties": false,
-        "description": "Response for CreateCourier endpoint"
-      },
-      "CreateOrUpdateCourierBodyInput": {
-        "type": "object",
-        "properties": {
-          "data": {
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/CreateOrUpdateCourierData"
-              }
-            ],
-            "description": "Courier's data"
-          }
-        },
-        "additionalProperties": false,
-        "description": "Input for CreateCourier or UpdateCourier endpoint"
-      },
-      "CreateOrUpdateCourierBox": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "integer",
-            "description": "AlzaBox Id",
-            "format": "int32",
-            "nullable": true,
-            "example": 1234
-          },
-          "pid": {
-            "maxLength": 100,
+          "exportDate": {
             "type": "string",
-            "description": "AlzaBox Partner Id",
-            "nullable": true,
-            "example": "PID9876"
-          }
-        },
-        "additionalProperties": false,
-        "description": "Box access for courier creation or update"
-      },
-      "CreateOrUpdateCourierData": {
-        "type": "object",
-        "properties": {
-          "courier": {
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/CreateOrUpdateCourierItem"
-              }
-            ],
-            "description": "Courier"
-          }
-        },
-        "additionalProperties": false,
-        "description": "Data of a courier"
-      },
-      "CreateOrUpdateCourierItem": {
-        "type": "object",
-        "properties": {
-          "login": {
-            "maxLength": 30,
-            "type": "string",
-            "description": "Login of the courier",
-            "example": "JohnDoe123"
-          },
-          "pin": {
-            "maxLength": 30,
-            "type": "string",
-            "description": "Pin for AlzaBox access",
-            "nullable": true,
-            "example": "123456"
-          },
-          "boxesAccessType": {
-            "type": "string",
-            "description": "Box access type",
-            "example": "SPECIFIC"
-          },
-          "boxes": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/CreateOrUpdateCourierBox"
-            },
-            "description": "AlzaBoxes to which courier has access",
-            "nullable": true
-          }
-        },
-        "additionalProperties": false,
-        "description": "Courier data"
-      },
-      "CreateReservationAttributesV2": {
-        "type": "object",
-        "properties": {
-          "docNumber": {
-            "type": "string",
-            "description": "Additional document number",
-            "nullable": true,
-            "example": "DOC123"
-          },
-          "flowType": {
-            "type": "string",
-            "description": "Reservation flow type",
-            "nullable": true,
-            "example": "OUTLET"
-          },
-          "expirationDate": {
-            "type": "string",
-            "description": "Expiration date in UTC",
+            "description": "Export date in UTC",
             "format": "date-time"
           },
-          "startReservationDate": {
+          "premises": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AlzaBoxSeznamFeedPremise"
+            },
+            "description": "The array of premises"
+          }
+        },
+        "additionalProperties": false,
+        "description": "Response for get feed endpoint"
+      },
+      "CreateReservationAttributes": {
+        "type": "object",
+        "properties": {
+          "status": {
             "type": "string",
-            "description": "Start reservation date in UTC",
-            "format": "date-time",
-            "nullable": true
+            "description": "Status of a reservation",
+            "deprecated": true
           },
-          "prereservationExpirationDate": {
+          "created_at": {
             "type": "string",
-            "description": "Prereservation expiration date in UTC\r\nEnables the prereservation functionality",
+            "description": "DateTime of creation in UTC",
             "format": "date-time",
-            "nullable": true
-          },
-          "blocked": {
-            "type": "boolean",
-            "description": "Status of a reservation blocking - blocked reservation can not be picked up by customer from the box",
             "nullable": true,
-            "example": false
+            "deprecated": true
+          },
+          "expiration_date": {
+            "type": "string",
+            "description": "Expiration date in UTC",
+            "format": "date-time",
+            "nullable": true
           },
           "packages": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/CreateReservationPackageV2"
+              "$ref": "#/components/schemas/CreateReservationPackage"
             },
             "description": "Packages"
+          },
+          "pin": {
+            "maxLength": 10,
+            "type": "string",
+            "description": "Pin",
+            "deprecated": true
           },
           "paymentData": {
             "allOf": [
@@ -1723,67 +1095,64 @@
           },
           "type": {
             "type": "string",
-            "description": "Type of reservation, possible values: IMMEDIATE, STATIC, TIME, NON_BINDING",
-            "default": "IMMEDIATE",
-            "nullable": true,
-            "example": "TIME"
-          },
-          "pin": {
-            "maxLength": 10,
-            "type": "string",
-            "description": "PIN code for customers' reservations",
-            "nullable": true,
-            "example": "123456"
-          },
-          "products": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/CreateReservationProduct"
-            },
-            "description": "Products included in the reservation, if they are not in any package yet"
-          },
-          "nextReservationTimes": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/CreateReservationNextReservationTime"
-            },
-            "description": "Next reservation times - if reservation fails for \r\nKonzole.ParcelLockersConnector.ApiModel.WriteModel.Reservations.Inputs.V2.CreateReservationAttributesV2.StartReservationDate \r\n(and Konzole.ParcelLockersConnector.ApiModel.WriteModel.Reservations.Inputs.V2.CreateReservationAttributesV2.ExpirationDate)\r\nthen the values here shall be used for reservation retry"
+            "description": "Type of reservation",
+            "nullable": true
           }
         },
         "additionalProperties": false,
         "description": "Attributes of a reservation"
       },
-      "CreateReservationBodyInputV2": {
+      "CreateReservationBodyInputV1": {
         "type": "object",
         "properties": {
           "data": {
             "allOf": [
               {
-                "$ref": "#/components/schemas/CreateReservationDataV2"
+                "$ref": "#/components/schemas/CreateReservationData"
               }
             ],
             "description": "Data of a reservation"
           }
         },
         "additionalProperties": false,
-        "description": "Input for creating reservation in AlzaBox"
+        "description": "Reservation create input"
       },
-      "CreateReservationDataV2": {
+      "CreateReservationBox": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Id of a box",
+            "format": "int32",
+            "nullable": true
+          },
+          "branchId": {
+            "type": "integer",
+            "description": "Id of a branch",
+            "format": "int32",
+            "nullable": true,
+            "deprecated": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Box"
+      },
+      "CreateReservationData": {
         "type": "object",
         "properties": {
           "reservation": {
             "allOf": [
               {
-                "$ref": "#/components/schemas/CreateReservationItemV2"
+                "$ref": "#/components/schemas/CreateReservationItem"
               }
             ],
-            "description": "Reservation data"
+            "description": "Reservation"
           }
         },
         "additionalProperties": false,
-        "description": "Data for creating reservation in AlzaBox"
+        "description": "Data of a reservation"
       },
-      "CreateReservationErrorResponseV2": {
+      "CreateReservationErrorResponse": {
         "type": "object",
         "properties": {
           "data": {
@@ -1808,19 +1177,18 @@
         "additionalProperties": false,
         "description": "Error response for create reservation endpoint"
       },
-      "CreateReservationItemV2": {
+      "CreateReservationItem": {
         "type": "object",
         "properties": {
           "id": {
             "maxLength": 100,
             "type": "string",
-            "description": "Id of a reservation, required and provided by partner",
-            "example": "RES123"
+            "description": "Id of a reservation"
           },
           "attributes": {
             "allOf": [
               {
-                "$ref": "#/components/schemas/CreateReservationAttributesV2"
+                "$ref": "#/components/schemas/CreateReservationAttributes"
               }
             ],
             "description": "Reservation's attributes"
@@ -1828,229 +1196,72 @@
           "relationships": {
             "allOf": [
               {
-                "$ref": "#/components/schemas/CreateReservationRelationshipsV2"
+                "$ref": "#/components/schemas/CreateReservationRelationships"
               }
             ],
             "description": "Reservation's relationships"
           }
         },
         "additionalProperties": false,
-        "description": "Data for creating reservation in AlzaBox"
+        "description": "AlzaBoxReservation representation for partners"
       },
-      "CreateReservationNextReservationTime": {
-        "type": "object",
-        "properties": {
-          "startReservationDate": {
-            "type": "string",
-            "description": "Next start reservation date in UTC",
-            "format": "date-time"
-          },
-          "expirationDate": {
-            "type": "string",
-            "description": "Next expiration date in UTC",
-            "format": "date-time",
-            "nullable": true
-          },
-          "prereservationExpirationDate": {
-            "type": "string",
-            "description": "Next prereservation expiration date in UTC\r\nEnables the prereservation functionality",
-            "format": "date-time",
-            "nullable": true
-          }
-        },
-        "additionalProperties": false,
-        "description": "AlzaBox next reservation time representation for partners"
-      },
-      "CreateReservationPackageRequirements": {
-        "type": "object",
-        "properties": {
-          "maxSlotSize": {
-            "type": "string",
-            "description": "Max slot size.",
-            "nullable": true,
-            "example": "M"
-          }
-        },
-        "additionalProperties": false,
-        "description": "The requirements of the package"
-      },
-      "CreateReservationPackageV2": {
+      "CreateReservationPackage": {
         "type": "object",
         "properties": {
           "depth": {
             "type": "number",
-            "description": "Depth of package in centimeters",
-            "format": "double",
-            "example": 3.5
+            "description": "Depth of a package in centimeters",
+            "format": "double"
           },
           "height": {
             "type": "number",
-            "description": "Height of package in centimeters",
-            "format": "double",
-            "example": 2.8
+            "description": "Height of a package in centimeters",
+            "format": "double"
           },
           "width": {
             "type": "number",
-            "description": "Width of package in centimeters",
-            "format": "double",
-            "example": 4.2
+            "description": "Width of a package in centimeters",
+            "format": "double"
           },
-          "barcode": {
+          "barCode": {
             "maxLength": 200,
             "type": "string",
-            "description": "Barcode",
-            "example": "PKG123"
+            "description": "Barcode"
           },
-          "requirements": {
+          "packageState": {
+            "type": "string",
+            "description": "State of a package",
+            "deprecated": true
+          },
+          "shippingList": {
             "allOf": [
               {
-                "$ref": "#/components/schemas/CreateReservationPackageRequirements"
+                "$ref": "#/components/schemas/ReservationPackageShippingList"
               }
             ],
-            "description": "The requirements of the package",
+            "description": "Shipping list",
             "nullable": true
           }
         },
         "additionalProperties": false,
         "description": "AlzaBoxPackage representation for partners"
       },
-      "CreateReservationProduct": {
-        "type": "object",
-        "properties": {
-          "depth": {
-            "type": "number",
-            "description": "Depth of the product in centimeters",
-            "format": "double",
-            "example": 3.5
-          },
-          "height": {
-            "type": "number",
-            "description": "Height of the product in centimeters",
-            "format": "double",
-            "example": 2.8
-          },
-          "width": {
-            "type": "number",
-            "description": "Width of the product in centimeters",
-            "format": "double",
-            "example": 4.2
-          },
-          "quantity": {
-            "type": "integer",
-            "description": "The quantity of the product in pieces",
-            "format": "int32",
-            "example": 1
-          },
-          "code": {
-            "maxLength": 30,
-            "type": "string",
-            "description": "The code of the product",
-            "example": "PROD123"
-          },
-          "weight": {
-            "type": "number",
-            "description": "The weight of the product in kilograms",
-            "format": "double",
-            "nullable": true,
-            "example": 1.3
-          },
-          "requirements": {
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/CreateReservationProductRequirements"
-              }
-            ],
-            "description": "The requirements of the product",
-            "nullable": true
-          }
-        },
-        "additionalProperties": false,
-        "description": "AlzaBox product representation for partners"
-      },
-      "CreateReservationProductRequirements": {
-        "type": "object",
-        "properties": {
-          "maxSlotSize": {
-            "type": "string",
-            "description": "Max slot size.",
-            "nullable": true,
-            "example": "M"
-          }
-        },
-        "additionalProperties": false,
-        "description": "The requirements of the product"
-      },
-      "CreateReservationRelationshipsBoxV2": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "integer",
-            "description": "Id of a box",
-            "format": "int32",
-            "nullable": true,
-            "example": 1234
-          },
-          "pid": {
-            "maxLength": 100,
-            "type": "string",
-            "description": "Partner Id of AlzaBox",
-            "nullable": true,
-            "example": "PID9876"
-          }
-        },
-        "additionalProperties": false,
-        "description": "Class used for specifying in which AlzaBox reservation should be created"
-      },
-      "CreateReservationRelationshipsReservationV2": {
-        "type": "object",
-        "properties": {
-          "type": {
-            "maxLength": 35,
-            "type": "string",
-            "description": "Reservation type - Eshop, Delivery, etc.",
-            "example": "Eshop"
-          },
-          "key": {
-            "maxLength": 35,
-            "type": "string",
-            "description": "ID/UUID of reservation.",
-            "example": "12345"
-          },
-          "partner": {
-            "maxLength": 35,
-            "type": "string",
-            "description": "Partner name.",
-            "example": "Alza"
-          }
-        },
-        "additionalProperties": false,
-        "description": "Create reservation relationships to reservation."
-      },
-      "CreateReservationRelationshipsV2": {
+      "CreateReservationRelationships": {
         "type": "object",
         "properties": {
           "box": {
             "allOf": [
               {
-                "$ref": "#/components/schemas/CreateReservationRelationshipsBoxV2"
+                "$ref": "#/components/schemas/CreateReservationBox"
               }
             ],
-            "description": "Box in which reservations should be made"
-          },
-          "reservation": {
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/CreateReservationRelationshipsReservationV2"
-              }
-            ],
-            "description": "Relationships to reservation.",
-            "nullable": true
+            "description": "Box"
           }
         },
         "additionalProperties": false,
         "description": "Relationships of a reservation"
       },
-      "CreateReservationResponseV2": {
+      "CreateReservationResponse": {
         "type": "object",
         "properties": {
           "metadata": {
@@ -2070,7 +1281,7 @@
           "data": {
             "allOf": [
               {
-                "$ref": "#/components/schemas/ReservationResponseItemV2"
+                "$ref": "#/components/schemas/ReservationResponseItem"
               }
             ],
             "description": "Useful data"
@@ -2140,61 +1351,7 @@
         "additionalProperties": false,
         "description": "Response error"
       },
-      "GetBoxErrorResponseV2": {
-        "type": "object",
-        "properties": {
-          "data": {
-            "description": "Data placeholder",
-            "default": null,
-            "nullable": true
-          },
-          "metadata": {
-            "description": "Metadata information",
-            "default": null,
-            "nullable": true
-          },
-          "errors": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/ErrorResponseItem"
-            },
-            "description": "Errors information",
-            "nullable": true
-          }
-        },
-        "additionalProperties": false,
-        "description": "Error response for get box endpoint"
-      },
-      "GetBoxResponseV2": {
-        "type": "object",
-        "properties": {
-          "metadata": {
-            "description": "Metadata information",
-            "default": null,
-            "nullable": true
-          },
-          "errors": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/ErrorResponseItem"
-            },
-            "description": "Errors information",
-            "default": null,
-            "nullable": true
-          },
-          "data": {
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/BoxResponseDataV2"
-              }
-            ],
-            "description": "Useful data"
-          }
-        },
-        "additionalProperties": false,
-        "description": "Response for get boxes endpoint"
-      },
-      "GetBoxesErrorResponseV2": {
+      "GetBoxesErrorResponseV1": {
         "type": "object",
         "properties": {
           "data": {
@@ -2219,7 +1376,7 @@
         "additionalProperties": false,
         "description": "Error response for get boxes endpoint"
       },
-      "GetBoxesResponseV2": {
+      "GetBoxesResponseV1": {
         "type": "object",
         "properties": {
           "metadata": {
@@ -2237,209 +1394,17 @@
             "nullable": true
           },
           "data": {
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/BoxesResponseDataV2"
-              }
-            ],
-            "description": "Useful data"
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AlzaBoxResponseItemV1"
+            },
+            "description": "Data"
           }
         },
         "additionalProperties": false,
         "description": "Response for get boxes endpoint"
       },
-      "GetCourierErrorResponse": {
-        "type": "object",
-        "properties": {
-          "data": {
-            "description": "Data placeholder",
-            "default": null,
-            "nullable": true
-          },
-          "metadata": {
-            "description": "Metadata information",
-            "default": null,
-            "nullable": true
-          },
-          "errors": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/ErrorResponseItem"
-            },
-            "description": "Errors information",
-            "nullable": true
-          }
-        },
-        "additionalProperties": false,
-        "description": "Error response for GetCourier endpoint"
-      },
-      "GetCourierResponse": {
-        "type": "object",
-        "properties": {
-          "metadata": {
-            "description": "Metadata information",
-            "default": null,
-            "nullable": true
-          },
-          "errors": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/ErrorResponseItem"
-            },
-            "description": "Errors information",
-            "default": null,
-            "nullable": true
-          },
-          "data": {
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/GetCourierResponseData"
-              }
-            ],
-            "description": "Useful data"
-          }
-        },
-        "additionalProperties": false,
-        "description": "Response for GetCourier endpoint"
-      },
-      "GetCourierResponseData": {
-        "type": "object",
-        "properties": {
-          "courier": {
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/CourierResponseItem"
-              }
-            ],
-            "description": "Courier information"
-          }
-        },
-        "additionalProperties": false,
-        "description": "Data of GetCourier Response"
-      },
-      "GetCouriersErrorResponse": {
-        "type": "object",
-        "properties": {
-          "data": {
-            "description": "Data placeholder",
-            "default": null,
-            "nullable": true
-          },
-          "metadata": {
-            "description": "Metadata information",
-            "default": null,
-            "nullable": true
-          },
-          "errors": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/ErrorResponseItem"
-            },
-            "description": "Errors information",
-            "nullable": true
-          }
-        },
-        "additionalProperties": false,
-        "description": "Error response for GetCourier endpoint"
-      },
-      "GetCouriersResponse": {
-        "type": "object",
-        "properties": {
-          "metadata": {
-            "description": "Metadata information",
-            "default": null,
-            "nullable": true
-          },
-          "errors": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/ErrorResponseItem"
-            },
-            "description": "Errors information",
-            "default": null,
-            "nullable": true
-          },
-          "data": {
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/GetCouriersResponseData"
-              }
-            ],
-            "description": "Useful data"
-          }
-        },
-        "additionalProperties": false,
-        "description": "Response for GetCouriers endpoint"
-      },
-      "GetCouriersResponseData": {
-        "type": "object",
-        "properties": {
-          "couriers": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/CourierResponseItem"
-            },
-            "description": "Couriers information"
-          }
-        },
-        "additionalProperties": false,
-        "description": "ResponseData for GetCouriers endpoint"
-      },
-      "GetReservationErrorResponseV2": {
-        "type": "object",
-        "properties": {
-          "data": {
-            "description": "Data placeholder",
-            "default": null,
-            "nullable": true
-          },
-          "metadata": {
-            "description": "Metadata information",
-            "default": null,
-            "nullable": true
-          },
-          "errors": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/ErrorResponseItem"
-            },
-            "description": "Errors information",
-            "nullable": true
-          }
-        },
-        "additionalProperties": false,
-        "description": "Error response for getting one specific reservation"
-      },
-      "GetReservationResponseV2": {
-        "type": "object",
-        "properties": {
-          "metadata": {
-            "description": "Metadata information",
-            "default": null,
-            "nullable": true
-          },
-          "errors": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/ErrorResponseItem"
-            },
-            "description": "Errors information",
-            "default": null,
-            "nullable": true
-          },
-          "data": {
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/ReservationResponseDataV2"
-              }
-            ],
-            "description": "Useful data"
-          }
-        },
-        "additionalProperties": false,
-        "description": "Response for getting one specific reservation"
-      },
-      "GetReservationsErrorResponseV2": {
+      "GetReservationsErrorResponse": {
         "type": "object",
         "properties": {
           "data": {
@@ -2464,21 +1429,7 @@
         "additionalProperties": false,
         "description": "Error response for get reservations endpoint"
       },
-      "GetReservationsResponseDataV2": {
-        "type": "object",
-        "properties": {
-          "reservations": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/ReservationResponseItemV2"
-            },
-            "description": "Reservations that match filter criteria"
-          }
-        },
-        "additionalProperties": false,
-        "description": "Reservations found based on filter criteria"
-      },
-      "GetReservationsResponseV2": {
+      "GetReservationsResponse": {
         "type": "object",
         "properties": {
           "metadata": {
@@ -2496,16 +1447,15 @@
             "nullable": true
           },
           "data": {
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/GetReservationsResponseDataV2"
-              }
-            ],
-            "description": "Useful data"
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ReservationResponseItem"
+            },
+            "description": "Data"
           }
         },
         "additionalProperties": false,
-        "description": "Response for getting multiple reservations"
+        "description": "Response for get reservations endpoint"
       },
       "GpsResponse": {
         "type": "object",
@@ -2525,6 +1475,32 @@
         },
         "additionalProperties": false,
         "description": "Gps coordinates"
+      },
+      "GraphQLQuery": {
+        "type": "object",
+        "properties": {
+          "operationName": {
+            "type": "string",
+            "nullable": true
+          },
+          "namedQuery": {
+            "type": "string",
+            "nullable": true
+          },
+          "query": {
+            "type": "string",
+            "nullable": true
+          },
+          "variables": {
+            "nullable": true
+          },
+          "parameters": {
+            "type": "object",
+            "additionalProperties": { },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
       },
       "OpeningHoursResponseItem": {
         "type": "object",
@@ -2551,6 +1527,31 @@
         "additionalProperties": false,
         "description": "Response information about opening hours of AlzaBox"
       },
+      "PackageResponseItem": {
+        "type": "object",
+        "properties": {
+          "depth": {
+            "type": "number",
+            "description": "Depth of a package in centimeters",
+            "format": "double",
+            "nullable": true
+          },
+          "height": {
+            "type": "number",
+            "description": "Height of a package in centimeters",
+            "format": "double",
+            "nullable": true
+          },
+          "width": {
+            "type": "number",
+            "description": "Width of a package in centimeters",
+            "format": "double",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Response information about package"
+      },
       "PhotosResponse": {
         "type": "object",
         "properties": {
@@ -2576,83 +1577,86 @@
         "additionalProperties": false,
         "description": "Response information about photos of AlzaBox"
       },
-      "ReservationAlzaBoxResponseV2": {
+      "RequiredSlotResponseItem": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "integer",
+            "description": "Type of slot",
+            "format": "int32"
+          },
+          "count": {
+            "type": "integer",
+            "description": "Number of slots",
+            "format": "int32"
+          },
+          "totalCount": {
+            "type": "integer",
+            "description": "Total number of slots",
+            "format": "int32"
+          },
+          "availableCount": {
+            "type": "integer",
+            "description": "Available number of slots",
+            "format": "int32"
+          },
+          "maxCount": {
+            "type": "integer",
+            "description": "Max number of slots",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false,
+        "description": "Response information about required slot"
+      },
+      "ReservationAlzaBoxResponse": {
         "type": "object",
         "properties": {
           "id": {
             "type": "integer",
             "description": "Id of a box",
-            "format": "int32",
-            "example": 1234
+            "format": "int32"
           },
-          "pid": {
-            "maxLength": 100,
+          "type": {
             "type": "string",
-            "description": "Partner ID of Box - identifier of box specific for partner and set by partner",
-            "nullable": true,
-            "example": "PID9876"
+            "description": "Type of a box",
+            "readOnly": true
+          },
+          "branchId": {
+            "type": "integer",
+            "description": "AlzaBox Branch Id\r\nObsolete",
+            "format": "int32",
+            "readOnly": true,
+            "deprecated": true
           }
         },
         "additionalProperties": false,
-        "description": "Information about AlzaBox used in reservation management results"
+        "description": "Response information about alzabox in parcel"
       },
-      "ReservationAttributesResponseV2": {
+      "ReservationAttributesResponse": {
         "type": "object",
         "properties": {
           "status": {
             "type": "string",
-            "description": "Status of a reservation, possible values: EXPIRED, CANCELED, NEW, PRERESERVED, RESERVED, INCOMPLETE, STOCKING, STOCKED_LOCKED, STOCKED, RETURNING, RETURNED, PICKED_UP",
-            "nullable": true,
-            "example": "STOCKED"
-          },
-          "blocked": {
-            "type": "boolean",
-            "description": "Status of a reservation blocking - blocked reservation can not be picked up by customer from the box",
+            "description": "Status of a reservation",
             "nullable": true
           },
-          "openerKey": {
+          "created_at": {
             "type": "string",
-            "description": "Unique reservation identification compatible with toher parts of the system",
-            "nullable": true
-          },
-          "createdAt": {
-            "type": "string",
-            "description": "Created at in UTC",
+            "description": "DateTime of creation in UTC",
             "format": "date-time",
             "nullable": true
           },
-          "expirationDate": {
+          "expiration_date": {
             "type": "string",
             "description": "Expiration date in UTC",
             "format": "date-time",
             "nullable": true
           },
-          "startReservationDate": {
-            "type": "string",
-            "description": "Start reservation date in UTC",
-            "format": "date-time",
-            "nullable": true
-          },
-          "prereservationExpirationDate": {
-            "type": "string",
-            "description": "Prereservation expiration date in UTC",
-            "format": "date-time",
-            "nullable": true
-          },
-          "docNumber": {
-            "type": "string",
-            "description": "Partner additional document number",
-            "nullable": true
-          },
-          "flowType": {
-            "type": "string",
-            "description": "Reservation flow type (OUTLET - classic flow from partner to customer, INLET - reversed flow known as AlzaPort)",
-            "nullable": true
-          },
           "packages": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/ReservationPackageResponseItemV2"
+              "$ref": "#/components/schemas/ReservationPackageResponseItem"
             },
             "description": "Packages"
           },
@@ -2669,86 +1673,133 @@
             "maxLength": 10,
             "type": "string",
             "description": "Pin",
-            "nullable": true,
-            "example": "123456"
+            "nullable": true
           },
           "type": {
             "type": "string",
-            "description": "Reservation type, possible values: IMMEDIATE, STATIC, TIME, NON_BINDING",
-            "nullable": true,
-            "example": "TIME"
-          },
-          "nextReservationTimes": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/ReservationNextReservationTimesResponseItemV2"
-            },
-            "description": "Next reservation times"
+            "description": "Reservation type",
+            "nullable": true
           }
         },
         "additionalProperties": false,
         "description": "Attributes of reservation"
       },
-      "ReservationNextReservationTimesResponseItemV2": {
-        "type": "object",
-        "properties": {
-          "expirationDate": {
-            "type": "string",
-            "description": "Expiration date in UTC",
-            "format": "date-time",
-            "nullable": true
-          },
-          "startReservationDate": {
-            "type": "string",
-            "description": "Start reservation date in UTC",
-            "format": "date-time",
-            "nullable": true
-          },
-          "prereservationExpirationDate": {
-            "type": "string",
-            "description": "Prereservation expiration date in UTC",
-            "format": "date-time",
-            "nullable": true
-          }
-        },
-        "additionalProperties": false,
-        "description": "Next reservation timse information response"
-      },
-      "ReservationPackageResponseItemV2": {
+      "ReservationPackageResponseItem": {
         "type": "object",
         "properties": {
           "depth": {
             "type": "number",
             "description": "Depth of a package in centimeters",
-            "format": "double",
-            "example": 3.5
+            "format": "double"
           },
           "height": {
             "type": "number",
             "description": "Height of a package in centimeters",
-            "format": "double",
-            "example": 2.8
+            "format": "double"
           },
           "width": {
             "type": "number",
             "description": "Width of a package in centimeters",
-            "format": "double",
-            "example": 4.2
+            "format": "double"
           },
-          "barcode": {
+          "barCode": {
             "maxLength": 200,
             "type": "string",
             "description": "Barcode",
-            "example": "PKG123"
+            "nullable": true
           },
           "packageState": {
             "type": "string",
-            "description": "State of a package, one of:\r\nNEW, DISPATCHED, PUTTED_IN_BY_SHIPPER, TAKEN_OUT_BY_SHIPPER, TAKEN_OUT_BY_CUSTOMER, NOT_FOUND_BY_SHIPPER, COULD_NOT_BE_PUTTED_IN",
-            "example": "PUTTED_IN_BY_SHIPPER"
+            "description": "State of a package",
+            "nullable": true
+          },
+          "shippingList": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ReservationPackageShippingListResponse"
+              }
+            ],
+            "description": "Shipping list",
+            "nullable": true
           }
         },
         "additionalProperties": false,
         "description": "Package information response"
+      },
+      "ReservationPackageShippingCarrier": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "maxLength": 50,
+            "type": "string",
+            "description": "Name",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "AlzaBoxPackageShippingCarrier representation for partners"
+      },
+      "ReservationPackageShippingCarrierResponse": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "maxLength": 50,
+            "type": "string",
+            "description": "Carrier name",
+            "nullable": true
+          },
+          "password": {
+            "type": "string",
+            "description": "Carrier time password",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Package shipping carrier information response"
+      },
+      "ReservationPackageShippingList": {
+        "type": "object",
+        "properties": {
+          "key": {
+            "maxLength": 30,
+            "type": "string",
+            "description": "Shipping list key",
+            "nullable": true
+          },
+          "carrier": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ReservationPackageShippingCarrier"
+              }
+            ],
+            "description": "Carrier",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "AlzaBoxPackageShippingList representation for partners"
+      },
+      "ReservationPackageShippingListResponse": {
+        "type": "object",
+        "properties": {
+          "key": {
+            "maxLength": 30,
+            "type": "string",
+            "description": "Shipping list key",
+            "nullable": true
+          },
+          "carrier": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ReservationPackageShippingCarrierResponse"
+              }
+            ],
+            "description": "Carrier",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Package shipping information response"
       },
       "ReservationPaymentData": {
         "type": "object",
@@ -2774,6 +1825,11 @@
             "description": "Variable symbol of payment",
             "nullable": true,
             "example": "123456"
+          },
+          "paymentState": {
+            "type": "string",
+            "description": "Payment state, possible values: DO_NOT_PAY, TO_PAY, PAID",
+            "example": "TO_PAY"
           }
         },
         "additionalProperties": false,
@@ -2803,71 +1859,67 @@
             "description": "Variable symbol",
             "nullable": true,
             "example": "123456"
+          },
+          "paymentState": {
+            "type": "string",
+            "description": "Payment state, possible values: DO_NOT_PAY, TO_PAY, PAID",
+            "example": "TO_PAY"
           }
         },
         "additionalProperties": false,
         "description": "Reservation payment data"
       },
-      "ReservationRelationshipsResponseV2": {
+      "ReservationRelationshipsResponse": {
         "type": "object",
         "properties": {
           "box": {
             "allOf": [
               {
-                "$ref": "#/components/schemas/ReservationAlzaBoxResponseV2"
+                "$ref": "#/components/schemas/ReservationAlzaBoxResponse"
               }
             ],
-            "description": "AlzaBox information"
+            "description": "AlzaBox information",
+            "nullable": true
           }
         },
         "additionalProperties": false,
         "description": "Reservation relationships response"
       },
-      "ReservationResponseDataV2": {
-        "type": "object",
-        "properties": {
-          "reservation": {
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/ReservationResponseItemV2"
-              }
-            ],
-            "description": "Reservation found by specific id",
-            "nullable": true
-          }
-        },
-        "additionalProperties": false,
-        "description": "Reservation found by specific id"
-      },
-      "ReservationResponseItemV2": {
+      "ReservationResponseItem": {
         "type": "object",
         "properties": {
           "id": {
             "maxLength": 100,
             "type": "string",
             "description": "Id of a reservation",
-            "nullable": true,
-            "example": "RES123"
+            "nullable": true
+          },
+          "type": {
+            "type": "string",
+            "description": "Type of a reservation",
+            "readOnly": true
           },
           "attributes": {
             "allOf": [
               {
-                "$ref": "#/components/schemas/ReservationAttributesResponseV2"
+                "$ref": "#/components/schemas/ReservationAttributesResponse"
               }
             ],
-            "description": "Attributes of reservation"
+            "description": "Attributes of reservation",
+            "nullable": true
           },
           "relationships": {
             "allOf": [
               {
-                "$ref": "#/components/schemas/ReservationRelationshipsResponseV2"
+                "$ref": "#/components/schemas/ReservationRelationshipsResponse"
               }
             ],
-            "description": "Relationships of reservation"
+            "description": "Relationships of reservation",
+            "nullable": true
           }
         },
         "additionalProperties": false,
-        "description": "Reservation response item"
+        "description": "Reservation response"
       },
       "SlotTypeStatResponseItem": {
         "type": "object",
@@ -2912,198 +1964,24 @@
         "additionalProperties": false,
         "description": "Slot types"
       },
-      "UpdateBoxBodyInputV2": {
-        "type": "object",
-        "properties": {
-          "data": {
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/UpdateBoxDataV2"
-              }
-            ],
-            "description": "Input data for updating AlzaBox"
-          }
-        },
-        "additionalProperties": false,
-        "description": "Input body for updating AlzaBox"
-      },
-      "UpdateBoxDataV2": {
-        "type": "object",
-        "properties": {
-          "box": {
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/UpdateBoxItemV2"
-              }
-            ],
-            "description": "AlzaBox to update"
-          }
-        },
-        "additionalProperties": false,
-        "description": "Input data for updapting AlzaBox"
-      },
-      "UpdateBoxErrorResponseV2": {
-        "type": "object",
-        "properties": {
-          "data": {
-            "description": "Data placeholder",
-            "default": null,
-            "nullable": true
-          },
-          "metadata": {
-            "description": "Metadata information",
-            "default": null,
-            "nullable": true
-          },
-          "errors": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/ErrorResponseItem"
-            },
-            "description": "Errors information",
-            "nullable": true
-          }
-        },
-        "additionalProperties": false,
-        "description": "Error response for update box endpoint"
-      },
-      "UpdateBoxItemV2": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "integer",
-            "description": "Box identification",
-            "format": "int32"
-          },
-          "pid": {
-            "type": "string",
-            "description": "Partner's box identification",
-            "nullable": true
-          }
-        },
-        "additionalProperties": false,
-        "description": "Input box information for updating AlzaBox"
-      },
-      "UpdateBoxResponseV2": {
-        "type": "object",
-        "properties": {
-          "metadata": {
-            "description": "Metadata information",
-            "default": null,
-            "nullable": true
-          },
-          "errors": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/ErrorResponseItem"
-            },
-            "description": "Errors information",
-            "default": null,
-            "nullable": true
-          },
-          "data": {
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/BoxResponseDataV2"
-              }
-            ],
-            "description": "Useful data"
-          }
-        },
-        "additionalProperties": false,
-        "description": "Response for update box endpoint"
-      },
-      "UpdateCourierErrorResponse": {
-        "type": "object",
-        "properties": {
-          "data": {
-            "description": "Data placeholder",
-            "default": null,
-            "nullable": true
-          },
-          "metadata": {
-            "description": "Metadata information",
-            "default": null,
-            "nullable": true
-          },
-          "errors": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/ErrorResponseItem"
-            },
-            "description": "Errors information",
-            "nullable": true
-          }
-        },
-        "additionalProperties": false,
-        "description": "Error response for UpdateCourier endpoint"
-      },
-      "UpdateCourierResponse": {
-        "type": "object",
-        "properties": {
-          "metadata": {
-            "description": "Metadata information",
-            "default": null,
-            "nullable": true
-          },
-          "errors": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/ErrorResponseItem"
-            },
-            "description": "Errors information",
-            "default": null,
-            "nullable": true
-          },
-          "data": {
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/CourierResponseItem"
-              }
-            ],
-            "description": "Useful data"
-          }
-        },
-        "additionalProperties": false,
-        "description": "Response for UpdateCourier endpoint"
-      },
-      "UpdateReservationAttributesV2": {
+      "UpdateReservationAttributes": {
         "type": "object",
         "properties": {
           "status": {
             "type": "string",
-            "description": "Status of a reservation, possible values: STOCKED, STOCKED_LOCKED, CANCELED",
-            "nullable": true,
-            "example": "STOCKED"
-          },
-          "startReservationDate": {
-            "type": "string",
-            "description": "Time from which the reservation should be stocked in UTC (for TIME Reservation)",
-            "format": "date-time",
+            "description": "Status of a reservation",
             "nullable": true
           },
-          "expirationDate": {
+          "expiration_date": {
             "type": "string",
             "description": "Expiration date in UTC",
             "format": "date-time",
             "nullable": true
           },
-          "prereservationExpirationDate": {
-            "type": "string",
-            "description": "Prereservation expiration date in UTC",
-            "format": "date-time",
-            "nullable": true
-          },
-          "blocked": {
-            "type": "boolean",
-            "description": "Status of a reservation blocking - blocked reservation can not be picked up by customer from the box",
-            "nullable": true,
-            "example": false
-          },
           "packages": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/UpdateReservationPackageV2"
+              "$ref": "#/components/schemas/UpdateReservationPackage"
             },
             "description": "Packages",
             "nullable": true
@@ -3116,25 +1994,18 @@
             ],
             "description": "Payment information",
             "nullable": true
-          },
-          "nextReservationTimes": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/CreateReservationNextReservationTime"
-            },
-            "description": "Next reservation times"
           }
         },
         "additionalProperties": false,
         "description": "Attributes of reservation to update"
       },
-      "UpdateReservationBodyInputV2": {
+      "UpdateReservationBodyInputV1": {
         "type": "object",
         "properties": {
           "data": {
             "allOf": [
               {
-                "$ref": "#/components/schemas/UpdateReservationDataV2"
+                "$ref": "#/components/schemas/UpdateReservationData"
               }
             ],
             "description": "Update reservation input data",
@@ -3144,13 +2015,13 @@
         "additionalProperties": false,
         "description": "Input for a reservation updating"
       },
-      "UpdateReservationDataV2": {
+      "UpdateReservationData": {
         "type": "object",
         "properties": {
           "reservation": {
             "allOf": [
               {
-                "$ref": "#/components/schemas/UpdateReservationItemV2"
+                "$ref": "#/components/schemas/UpdateReservationItem"
               }
             ],
             "description": "Reservation data to update",
@@ -3160,7 +2031,7 @@
         "additionalProperties": false,
         "description": "Update reservation data"
       },
-      "UpdateReservationErrorResponseV2": {
+      "UpdateReservationErrorResponse": {
         "type": "object",
         "properties": {
           "data": {
@@ -3185,20 +2056,24 @@
         "additionalProperties": false,
         "description": "Error response for update reservation"
       },
-      "UpdateReservationItemV2": {
+      "UpdateReservationItem": {
         "type": "object",
         "properties": {
           "id": {
             "maxLength": 100,
             "type": "string",
             "description": "Id of a reservation",
-            "nullable": true,
-            "example": "RES123"
+            "nullable": true
+          },
+          "type": {
+            "type": "string",
+            "description": "Type of a reservation",
+            "readOnly": true
           },
           "attributes": {
             "allOf": [
               {
-                "$ref": "#/components/schemas/UpdateReservationAttributesV2"
+                "$ref": "#/components/schemas/UpdateReservationAttributes"
               }
             ],
             "description": "Attributes of a reservation to update",
@@ -3208,42 +2083,47 @@
         "additionalProperties": false,
         "description": "Reservation information to update"
       },
-      "UpdateReservationPackageV2": {
+      "UpdateReservationPackage": {
         "type": "object",
         "properties": {
           "depth": {
             "type": "number",
-            "description": "Depth of package in centimeters",
+            "description": "Depth of a package in centimeters",
             "format": "double",
-            "nullable": true,
-            "example": 3.5
+            "nullable": true
           },
           "height": {
             "type": "number",
-            "description": "Height of package in centimeters",
+            "description": "Height of a package in centimeters",
             "format": "double",
-            "nullable": true,
-            "example": 2.8
+            "nullable": true
           },
           "width": {
             "type": "number",
-            "description": "Width of package in centimeters",
+            "description": "Width of a package in centimeters",
             "format": "double",
-            "nullable": true,
-            "example": 4.2
+            "nullable": true
           },
-          "barcode": {
+          "barCode": {
             "maxLength": 200,
             "type": "string",
-            "description": "Barcode of a package",
-            "nullable": true,
-            "example": "PKG123"
+            "description": "BarCode of a package",
+            "nullable": true
+          },
+          "shippingList": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ReservationPackageShippingList"
+              }
+            ],
+            "description": "Shipping list",
+            "nullable": true
           }
         },
         "additionalProperties": false,
         "description": "Package information for updating a reservation"
       },
-      "UpdateReservationResponseV2": {
+      "UpdateReservationResponse": {
         "type": "object",
         "properties": {
           "metadata": {
@@ -3263,7 +2143,7 @@
           "data": {
             "allOf": [
               {
-                "$ref": "#/components/schemas/ReservationResponseItemV2"
+                "$ref": "#/components/schemas/ReservationResponseItem"
               }
             ],
             "description": "Useful data"
@@ -3289,16 +2169,12 @@
   },
   "tags": [
     {
-      "name": "Boxes",
-      "description": "Controller for boxes management"
+      "name": "ParcelLockers",
+      "description": "Controller with endpoints for ParcelLockers partners"
     },
     {
-      "name": "Couriers",
-      "description": "Controller for couriers management"
-    },
-    {
-      "name": "Reservations",
-      "description": "Controller for reservations management"
+      "name": "ParcelLockersFeed",
+      "description": "Controller with endpoints for ParcelLockers feeds"
     }
   ]
 }
