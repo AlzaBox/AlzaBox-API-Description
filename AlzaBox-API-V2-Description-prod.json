@@ -115,7 +115,7 @@
         },
         "security": [
           {
-            "oauth2": []
+            "oauth2": [ ]
           }
         ]
       },
@@ -242,7 +242,7 @@
         },
         "security": [
           {
-            "oauth2": []
+            "oauth2": [ ]
           }
         ]
       }
@@ -346,7 +346,7 @@
         },
         "security": [
           {
-            "oauth2": []
+            "oauth2": [ ]
           }
         ]
       }
@@ -439,7 +439,7 @@
         },
         "security": [
           {
-            "oauth2": []
+            "oauth2": [ ]
           }
         ]
       },
@@ -554,7 +554,7 @@
         },
         "security": [
           {
-            "oauth2": []
+            "oauth2": [ ]
           }
         ]
       },
@@ -679,7 +679,7 @@
         },
         "security": [
           {
-            "oauth2": []
+            "oauth2": [ ]
           }
         ]
       }
@@ -771,7 +771,7 @@
         },
         "security": [
           {
-            "oauth2": []
+            "oauth2": [ ]
           }
         ]
       }
@@ -939,7 +939,7 @@
         },
         "security": [
           {
-            "oauth2": []
+            "oauth2": [ ]
           }
         ]
       }
@@ -1050,7 +1050,7 @@
         },
         "security": [
           {
-            "oauth2": []
+            "oauth2": [ ]
           }
         ]
       },
@@ -1163,7 +1163,7 @@
         },
         "security": [
           {
-            "oauth2": []
+            "oauth2": [ ]
           }
         ]
       },
@@ -1276,7 +1276,7 @@
         },
         "security": [
           {
-            "oauth2": []
+            "oauth2": [ ]
           }
         ]
       }
@@ -2008,18 +2008,21 @@
             "maxLength": 35,
             "type": "string",
             "description": "Reservation type - Eshop, Delivery, etc.",
+            "nullable": true,
             "example": "Eshop"
           },
           "key": {
             "maxLength": 35,
             "type": "string",
             "description": "ID/UUID of reservation.",
+            "nullable": true,
             "example": "12345"
           },
           "partner": {
             "maxLength": 35,
             "type": "string",
             "description": "Partner name.",
+            "nullable": true,
             "example": "Alza"
           }
         },
@@ -2774,6 +2777,11 @@
             "description": "Variable symbol of payment",
             "nullable": true,
             "example": "123456"
+          },
+          "paymentState": {
+            "type": "string",
+            "description": "Payment state, possible values: DO_NOT_PAY, TO_PAY, PAID",
+            "example": "TO_PAY"
           }
         },
         "additionalProperties": false,
@@ -2803,6 +2811,11 @@
             "description": "Variable symbol",
             "nullable": true,
             "example": "123456"
+          },
+          "paymentState": {
+            "type": "string",
+            "description": "Payment state, possible values: DO_NOT_PAY, TO_PAY, PAID",
+            "example": "TO_PAY"
           }
         },
         "additionalProperties": false,
