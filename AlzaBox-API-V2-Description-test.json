@@ -372,7 +372,7 @@
           {
             "name": "fields[courier]",
             "in": "query",
-            "description": "Array of fields that should be returned.\r\nSupported values: boxes, boxesAccessType",
+            "description": "Array of fields that should be returned.\r\nSupported values: boxes, boxesAccessType, role",
             "schema": {
               "type": "array",
               "items": {
@@ -380,12 +380,14 @@
               },
               "example": [
                 "boxes",
-                "boxesAccessType"
+                "boxesAccessType",
+                "role"
               ]
             },
             "example": [
               "boxes",
-              "boxesAccessType"
+              "boxesAccessType",
+              "role"
             ]
           }
         ],
@@ -452,7 +454,7 @@
           {
             "name": "fields[courier]",
             "in": "query",
-            "description": "Array of fields that should be returned.\r\nSupported values: boxes, boxesAccessType",
+            "description": "Array of fields that should be returned.\r\nSupported values: boxes, boxesAccessType, role",
             "schema": {
               "type": "array",
               "items": {
@@ -460,12 +462,14 @@
               },
               "example": [
                 "boxes",
-                "boxesAccessType"
+                "boxesAccessType",
+                "role"
               ]
             },
             "example": [
               "boxes",
-              "boxesAccessType"
+              "boxesAccessType",
+              "role"
             ]
           }
         ],
@@ -567,7 +571,7 @@
           {
             "name": "fields[courier]",
             "in": "query",
-            "description": "Array of fields that should be returned.\r\nSupported values: boxes, boxesAccessType",
+            "description": "Array of fields that should be returned.\r\nSupported values: boxes, boxesAccessType, role",
             "schema": {
               "type": "array",
               "items": {
@@ -575,12 +579,14 @@
               },
               "example": [
                 "boxes",
-                "boxesAccessType"
+                "boxesAccessType",
+                "role"
               ]
             },
             "example": [
               "boxes",
-              "boxesAccessType"
+              "boxesAccessType",
+              "role"
             ]
           }
         ],
@@ -1476,6 +1482,12 @@
             },
             "description": "Boxes to which courier has access",
             "nullable": true
+          },
+          "role": {
+            "type": "string",
+            "description": "Courier role",
+            "nullable": true,
+            "example": "DELIVERY_ONLY"
           }
         },
         "additionalProperties": false,
@@ -1662,6 +1674,11 @@
             },
             "description": "AlzaBoxes to which courier has access",
             "nullable": true
+          },
+          "role": {
+            "type": "string",
+            "description": "Courier role",
+            "example": "DELIVERY_ONLY"
           }
         },
         "additionalProperties": false,
