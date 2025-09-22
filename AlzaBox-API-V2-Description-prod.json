@@ -115,7 +115,7 @@
         },
         "security": [
           {
-            "oauth2": [ ]
+            "oauth2": []
           }
         ]
       },
@@ -242,7 +242,7 @@
         },
         "security": [
           {
-            "oauth2": [ ]
+            "oauth2": []
           }
         ]
       }
@@ -346,7 +346,7 @@
         },
         "security": [
           {
-            "oauth2": [ ]
+            "oauth2": []
           }
         ]
       }
@@ -441,7 +441,7 @@
         },
         "security": [
           {
-            "oauth2": [ ]
+            "oauth2": []
           }
         ]
       },
@@ -558,7 +558,7 @@
         },
         "security": [
           {
-            "oauth2": [ ]
+            "oauth2": []
           }
         ]
       },
@@ -685,7 +685,7 @@
         },
         "security": [
           {
-            "oauth2": [ ]
+            "oauth2": []
           }
         ]
       }
@@ -720,7 +720,7 @@
           {
             "name": "fields[courier]",
             "in": "query",
-            "description": "Array of fields that should be returned.\r\nSupported values: boxes, boxesAccessType",
+            "description": "Array of fields that should be returned.\r\nSupported values: boxes, boxesAccessType, role",
             "schema": {
               "type": "array",
               "items": {
@@ -728,12 +728,14 @@
               },
               "example": [
                 "boxes",
-                "boxesAccessType"
+                "boxesAccessType",
+                "role"
               ]
             },
             "example": [
               "boxes",
-              "boxesAccessType"
+              "boxesAccessType",
+              "role"
             ]
           }
         ],
@@ -777,7 +779,7 @@
         },
         "security": [
           {
-            "oauth2": [ ]
+            "oauth2": []
           }
         ]
       }
@@ -872,7 +874,8 @@
                 "docNumber",
                 "flowType",
                 "prereservationExpirationDate",
-                "nextReservationTimes"
+                "nextReservationTimes",
+                "maxDeliveryHeight"
               ]
             },
             "example": [
@@ -881,7 +884,8 @@
               "docNumber",
               "flowType",
               "prereservationExpirationDate",
-              "nextReservationTimes"
+              "nextReservationTimes",
+              "maxDeliveryHeight"
             ]
           }
         ],
@@ -945,7 +949,7 @@
         },
         "security": [
           {
-            "oauth2": [ ]
+            "oauth2": []
           }
         ]
       }
@@ -983,7 +987,8 @@
                 "docNumber",
                 "flowType",
                 "prereservationExpirationDate",
-                "nextReservationTimes"
+                "nextReservationTimes",
+                "maxDeliveryHeight"
               ]
             },
             "example": [
@@ -992,7 +997,8 @@
               "docNumber",
               "flowType",
               "prereservationExpirationDate",
-              "nextReservationTimes"
+              "nextReservationTimes",
+              "maxDeliveryHeight"
             ]
           }
         ],
@@ -1056,7 +1062,7 @@
         },
         "security": [
           {
-            "oauth2": [ ]
+            "oauth2": []
           }
         ]
       },
@@ -1081,7 +1087,8 @@
                 "docNumber",
                 "flowType",
                 "prereservationExpirationDate",
-                "nextReservationTimes"
+                "nextReservationTimes",
+                "maxDeliveryHeight"
               ]
             },
             "example": [
@@ -1090,7 +1097,8 @@
               "docNumber",
               "flowType",
               "prereservationExpirationDate",
-              "nextReservationTimes"
+              "nextReservationTimes",
+              "maxDeliveryHeight"
             ]
           }
         ],
@@ -1169,7 +1177,7 @@
         },
         "security": [
           {
-            "oauth2": [ ]
+            "oauth2": []
           }
         ]
       },
@@ -1194,7 +1202,8 @@
                 "docNumber",
                 "flowType",
                 "prereservationExpirationDate",
-                "nextReservationTimes"
+                "nextReservationTimes",
+                "maxDeliveryHeight"
               ]
             },
             "example": [
@@ -1203,7 +1212,8 @@
               "docNumber",
               "flowType",
               "prereservationExpirationDate",
-              "nextReservationTimes"
+              "nextReservationTimes",
+              "maxDeliveryHeight"
             ]
           }
         ],
@@ -1282,7 +1292,93 @@
         },
         "security": [
           {
-            "oauth2": [ ]
+            "oauth2": []
+          }
+        ]
+      }
+    },
+    "/parcel-lockers/v2/reservation/store": {
+      "post": {
+        "tags": [
+          "Reservations"
+        ],
+        "summary": "Store reservation into a box remotely (via QR Code scan).\r\nCreates new INLET reservation upon successful storage.",
+        "requestBody": {
+          "description": "Store reservation information.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/StoreReservationRemotelyBodyInputV2"
+                  }
+                ],
+                "description": "Input for storing a parcel remotely."
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StoreReservationRemotelyResponseV2"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StoreReservationRemotelyErrorResponseV2"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StoreReservationRemotelyErrorResponseV2"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StoreReservationRemotelyErrorResponseV2"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StoreReservationRemotelyErrorResponseV2"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server Error"
+          }
+        },
+        "security": [
+          {
+            "oauth2": []
           }
         ]
       }
@@ -1475,6 +1571,12 @@
             "nullable": true,
             "example": "SPECIFIC"
           },
+          "role": {
+            "type": "string",
+            "description": "Courier role defining the type of operations allowed",
+            "nullable": true,
+            "example": "DELIVERY_AND_PICKUP"
+          },
           "boxes": {
             "type": "array",
             "items": {
@@ -1482,12 +1584,6 @@
             },
             "description": "Boxes to which courier has access",
             "nullable": true
-          },
-          "role": {
-            "type": "string",
-            "description": "Courier role",
-            "nullable": true,
-            "example": "DELIVERY_ONLY"
           }
         },
         "additionalProperties": false,
@@ -1667,6 +1763,13 @@
             "description": "Box access type",
             "example": "SPECIFIC"
           },
+          "role": {
+            "maxLength": 30,
+            "type": "string",
+            "description": "Courier role defining the type of operations allowed",
+            "nullable": true,
+            "example": "DELIVERY_AND_PICKUP"
+          },
           "boxes": {
             "type": "array",
             "items": {
@@ -1674,11 +1777,6 @@
             },
             "description": "AlzaBoxes to which courier has access",
             "nullable": true
-          },
-          "role": {
-            "type": "string",
-            "description": "Courier role",
-            "example": "DELIVERY_ONLY"
           }
         },
         "additionalProperties": false,
@@ -2704,6 +2802,12 @@
               "$ref": "#/components/schemas/ReservationNextReservationTimesResponseItemV2"
             },
             "description": "Next reservation times"
+          },
+          "maxDeliveryHeight": {
+            "type": "integer",
+            "description": "Maximal delivery height for the parcel in centimeters.",
+            "format": "int32",
+            "nullable": true
           }
         },
         "additionalProperties": false,
@@ -2941,6 +3045,151 @@
         },
         "additionalProperties": false,
         "description": "Slot types"
+      },
+      "StoreReservationRemotelyBodyInputV2": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/StoreReservationRemotelyDataV2"
+              }
+            ],
+            "description": "Update reservation input data.",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Input for storing a parcel remotely."
+      },
+      "StoreReservationRemotelyDataV2": {
+        "type": "object",
+        "properties": {
+          "reservation": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/StoreReservationRemotelyItemV2"
+              }
+            ],
+            "description": "Store reservation remotely data.",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Store parcel remotely data."
+      },
+      "StoreReservationRemotelyErrorResponseV2": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "description": "Data placeholder",
+            "default": null,
+            "nullable": true
+          },
+          "metadata": {
+            "description": "Metadata information",
+            "default": null,
+            "nullable": true
+          },
+          "errors": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ErrorResponseItem"
+            },
+            "description": "Errors information",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Error response for storing reservation remotely."
+      },
+      "StoreReservationRemotelyItemV2": {
+        "type": "object",
+        "properties": {
+          "attributes": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/StoreReservationlRemotelyAttributesV2"
+              }
+            ],
+            "description": "Attributes for remote reservation storing.",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Store parcel remotely information."
+      },
+      "StoreReservationRemotelyResponseItemV2": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "description": "Whether the package was stored successfully."
+          },
+          "state": {
+            "type": "string",
+            "description": "State of the package after an attempt to store the reservation.\r\nNull if the operation was not attempted or exception occured.",
+            "nullable": true
+          },
+          "errorMessage": {
+            "type": "string",
+            "description": "Error message if the operation was not successful with an exception.",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Response item for remote reservation storing."
+      },
+      "StoreReservationRemotelyResponseV2": {
+        "type": "object",
+        "properties": {
+          "metadata": {
+            "description": "Metadata information",
+            "default": null,
+            "nullable": true
+          },
+          "errors": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ErrorResponseItem"
+            },
+            "description": "Errors information",
+            "default": null,
+            "nullable": true
+          },
+          "data": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/StoreReservationRemotelyResponseItemV2"
+              }
+            ],
+            "description": "Useful data"
+          }
+        },
+        "additionalProperties": false,
+        "description": "Response for storing reservation remotely."
+      },
+      "StoreReservationlRemotelyAttributesV2": {
+        "type": "object",
+        "properties": {
+          "qrCode": {
+            "type": "string",
+            "description": "QR code containing machine identification in specified format.",
+            "example": "alza://alzabox/{id}"
+          },
+          "alzaPortCode": {
+            "type": "string",
+            "description": "Code for the AlzaPort package identification (customer input).",
+            "example": "Code123"
+          },
+          "documentNumber": {
+            "type": "string",
+            "description": "Document number as a Parcel identification.",
+            "example": "Doc123"
+          }
+        },
+        "additionalProperties": false,
+        "description": "Attributes for remote reservation storing."
       },
       "UpdateBoxBodyInputV2": {
         "type": "object",
@@ -3308,7 +3557,7 @@
         "type": "oauth2",
         "flows": {
           "password": {
-            "tokenUrl": "https://identitymanagement.phoenix.alza.cz/connect/token",
+            "tokenUrl": "https://identitymanagement.phx-dev.alz.lcl/connect/token",
             "scopes": {
               "konzole_access": "Konzole API"
             }
