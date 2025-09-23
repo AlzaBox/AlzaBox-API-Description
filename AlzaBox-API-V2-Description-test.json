@@ -874,8 +874,7 @@
                 "docNumber",
                 "flowType",
                 "prereservationExpirationDate",
-                "nextReservationTimes",
-                "maxDeliveryHeight"
+                "nextReservationTimes"
               ]
             },
             "example": [
@@ -884,8 +883,7 @@
               "docNumber",
               "flowType",
               "prereservationExpirationDate",
-              "nextReservationTimes",
-              "maxDeliveryHeight"
+              "nextReservationTimes"
             ]
           }
         ],
@@ -987,8 +985,7 @@
                 "docNumber",
                 "flowType",
                 "prereservationExpirationDate",
-                "nextReservationTimes",
-                "maxDeliveryHeight"
+                "nextReservationTimes"
               ]
             },
             "example": [
@@ -997,8 +994,7 @@
               "docNumber",
               "flowType",
               "prereservationExpirationDate",
-              "nextReservationTimes",
-              "maxDeliveryHeight"
+              "nextReservationTimes"
             ]
           }
         ],
@@ -1087,8 +1083,7 @@
                 "docNumber",
                 "flowType",
                 "prereservationExpirationDate",
-                "nextReservationTimes",
-                "maxDeliveryHeight"
+                "nextReservationTimes"
               ]
             },
             "example": [
@@ -1097,8 +1092,7 @@
               "docNumber",
               "flowType",
               "prereservationExpirationDate",
-              "nextReservationTimes",
-              "maxDeliveryHeight"
+              "nextReservationTimes"
             ]
           }
         ],
@@ -1202,8 +1196,7 @@
                 "docNumber",
                 "flowType",
                 "prereservationExpirationDate",
-                "nextReservationTimes",
-                "maxDeliveryHeight"
+                "nextReservationTimes"
               ]
             },
             "example": [
@@ -1212,8 +1205,7 @@
               "docNumber",
               "flowType",
               "prereservationExpirationDate",
-              "nextReservationTimes",
-              "maxDeliveryHeight"
+              "nextReservationTimes"
             ]
           }
         ],
@@ -2802,12 +2794,6 @@
               "$ref": "#/components/schemas/ReservationNextReservationTimesResponseItemV2"
             },
             "description": "Next reservation times"
-          },
-          "maxDeliveryHeight": {
-            "type": "integer",
-            "description": "Maximal delivery height for the parcel in centimeters.",
-            "format": "int32",
-            "nullable": true
           }
         },
         "additionalProperties": false,
