@@ -2869,6 +2869,11 @@
             "type": "string",
             "description": "State of a package, one of:\r\nNEW, DISPATCHED, PUTTED_IN_BY_SHIPPER, TAKEN_OUT_BY_SHIPPER, TAKEN_OUT_BY_CUSTOMER, NOT_FOUND_BY_SHIPPER, COULD_NOT_BE_PUTTED_IN",
             "example": "PUTTED_IN_BY_SHIPPER"
+          },
+          "requiredTemperatureRegulation": {
+            "type": "string",
+            "description": "Defines required temperature regulation type for package, one of:\r\nCONTROL, MONITORING, MONITORING_PREFERRED",
+            "example": "CONTROL"
           }
         },
         "additionalProperties": false,
